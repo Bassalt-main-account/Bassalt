@@ -1,12 +1,16 @@
 from flet import Container, Image, Icon
 from .ThemedWidget import ThemedWidget
+from .ResponsiveWidget import ResponsiveWidget
 from assets.colors import COLORS as c
 
 class Button(Container, ThemedWidget):
     def __init__(self, icon, page, on_click = None, group=None, ratio=1):
-        Container.__init__(self)
+                
         ThemedWidget.__init__(self)
+        Container.__init__(self)
+        
         self.page = page
+        self.icon = icon
         self.ratio = ratio
         self.default_color = self._get_color("default")
         self.bgcolor = self.default_color
@@ -21,7 +25,8 @@ class Button(Container, ThemedWidget):
         self.group = group
         if group:
             group.add_button(self)
-
+        
+        
     def _get_color(self, color_key):
         theme = self.page.theme_mode 
         return c[theme][color_key]
