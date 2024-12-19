@@ -3,26 +3,25 @@ from .ThemedWidget import ThemedWidget
 from assets.colors import COLORS as c
 
 class Button(Container, ThemedWidget):
-    def __init__(self, icon, page, on_click = None, group=None, col={"sm": 6, "md": 4, "xl": 2},  ratio=1):
+    def __init__(self, icon, page, on_click = None, group=None, size=40):
                 
         ThemedWidget.__init__(self)
         Container.__init__(self)
         
         self.page = page
         self.icon = icon
-        self.ratio = ratio
+        self.size = size
         self.default_color = self._get_color("default")
         self.bgcolor = self.default_color
-        self.border_radius = 10 * self.ratio
-        self.width = 50 * self.ratio
-        self.height = 50 * self.ratio
+        self.border_radius = self.size * 0.25
+        self.width = size 
+        self.height = size
         self.content = self._create_content(icon)
         self.original_on_click = on_click
         self.on_click = self.handle_click
         self.on_hover = self._on_hover
         self.is_selected = False
         self.group = group
-        self.col = col
         if group:
             group.add_button(self)
         
@@ -34,8 +33,8 @@ class Button(Container, ThemedWidget):
     def _create_content(self, icon):
         color = self._get_color("icon")
         if icon.endswith(".svg"):
-            return Image(src=f"assets/{icon}", width=40 * self.ratio, height=40 * self.ratio, color=color)
-        return Icon(name=icon, size=40 * self.ratio, color=color)
+            return Image(src=f"assets/{icon}", width=self.size * 0.8, height=self.size * 0.8, color=color)
+        return Icon(name=icon, size=self.size * 0.8, color=color)
 
     def _on_hover(self, e):
         if not self.is_selected:
