@@ -6,7 +6,9 @@ from src.UI.components.toggleThemeButton import ToggleThemeButton
 
 
 def main(page: Page):
-
+    page.title = "Bassalt"
+    page.window.icon = "icon.ico"
+    page.window.width = 1000
     page.theme_mode = "dark"
     page.fonts = {
         "firasansBold": "fonts/FiraSans-Bold.ttf",
@@ -28,13 +30,14 @@ def main(page: Page):
             ToggleThemeButton(page),
             Text("Hello, Themed World!", page, 20, "firasansBold"),
             Row([
-                Button("ADD_ROUNDED", page, on_click, button_group),
-                Button("DASHBOARD_ROUNDED", page,  on_click, button_group),
-                Button("LAYERS_ROUNDED", page,  on_click, button_group),
-                Button("isotipe_transparent.svg", page,  on_click, button_group)
-            ]),
+                Button("ADD_ROUNDED", page, on_click, button_group,col={"sm": 4, "md": 4, "xl": 4},),
+                Button("DASHBOARD_ROUNDED", page,  on_click, button_group,col={"sm": 4, "md": 4, "xl": 4},),
+                Button("LAYERS_ROUNDED", page,  on_click, button_group,col={"sm": 4, "md": 4, "xl": 4},),
+                Button("isotipe_transparent.svg", page,  on_click, button_group,col={"sm": 4, "md": 4, "xl": 4},)
+            ])
         ])
     )
+
 
 
 app(target=main)

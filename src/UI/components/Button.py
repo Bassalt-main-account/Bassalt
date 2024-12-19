@@ -3,7 +3,7 @@ from .ThemedWidget import ThemedWidget
 from assets.colors import COLORS as c
 
 class Button(Container, ThemedWidget):
-    def __init__(self, icon, page, on_click = None, group=None, ratio=1):
+    def __init__(self, icon, page, on_click = None, group=None, col={"sm": 6, "md": 4, "xl": 2},  ratio=1):
                 
         ThemedWidget.__init__(self)
         Container.__init__(self)
@@ -22,6 +22,7 @@ class Button(Container, ThemedWidget):
         self.on_hover = self._on_hover
         self.is_selected = False
         self.group = group
+        self.col = col
         if group:
             group.add_button(self)
         
