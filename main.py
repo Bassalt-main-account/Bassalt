@@ -3,11 +3,11 @@ from src.UI.components.Button import Button
 from src.UI.components.ButtonGroup import ButtonGroup
 from src.UI.components.Text import Text
 from src.UI.components.toggleThemeButton import ToggleThemeButton
-# PRUEBAS
+
+
 def main(page: Page):
 
     page.theme_mode = "dark"
-    
     page.fonts = {
         "firasansBold": "fonts/FiraSans-Bold.ttf",
         "firasansSemiBold": "fonts/FiraSans-SemiBold.ttf",
@@ -35,8 +35,6 @@ def main(page: Page):
             ]),
         ])
     )
-
-
 
 
 app(target=main)

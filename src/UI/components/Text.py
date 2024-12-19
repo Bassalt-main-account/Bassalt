@@ -20,7 +20,3 @@ class Text(Text, ThemedWidget):
         self.color = self._get_color("text")
         self.update()
 
-    def update_size(self):
-        """Actualiza el color del texto según el tema actual."""
-        self.color = self._get_color("text")
-        self.update()

@@ -1,6 +1,5 @@
 from flet import Container, Image, Icon
 from .ThemedWidget import ThemedWidget
-from .ResponsiveWidget import ResponsiveWidget
 from assets.colors import COLORS as c
 
 class Button(Container, ThemedWidget):
