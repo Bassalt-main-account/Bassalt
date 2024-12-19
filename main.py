@@ -1,32 +1,38 @@
-import flet as ft
-from src.UI.components.ThemedButton import ThemedButton
+from flet import Page, app, Column, Row
+from src.UI.components.Button import Button
 from src.UI.components.ButtonGroup import ButtonGroup
-from src.UI.components.ThemedText import ThemedText
-from src.UI.components.ThemedWidget import ThemedWidget
+from src.UI.components.Text import Text
 from src.UI.components.toggleThemeButton import ToggleThemeButton
 
 # PRUEBAS
-def main(page: ft.Page):
-    page.theme_mode = "dark"
+def main(page: Page):
 
-    # Lista de botones e inicialización
-    icons = ["add_rounded", "DASHBOARD_ROUNDED", "LAYERS_ROUNDED", "isotipe_transparent.svg"]
+    page.theme_mode = "dark"
+    page.fonts = {
+        "firacodeBold": "fonts/FiraCode-Bold.ttf",
+        "firacodeSemiBold": "fonts/FiraCode-SemiBold.ttf",
+        "firacodeMedium": "fonts/FiraCode-Medium.ttf",
+    }
+
+    # Crear un grupo de botones
     button_group = ButtonGroup()
-    buttons = [
-        ThemedButton(icon, lambda e: print("Clicked"), page, button_group)
-        for icon in icons
-    ]
 
     # Widgets adicionales
-    themed_text = ThemedText("Hello, Themed World!", page)
+    text = Text("Hello, Themed World!", page)
 
     # Layout de la página
     page.add(
-        ft.Column([
+        Column([
             ToggleThemeButton(page),
-            themed_text,
-            ft.Row(buttons),
+            text,
+            Row([
+                Button("ADD_ROUNDED", page, lambda e: print("Clicked"),button_group),
+                Button("DASHBOARD_ROUNDED", page,  lambda e: print("Clicked"), button_group),
+                Button("LAYERS_ROUNDED", page,  lambda e: print("Clicked"), button_group),
+                Button("isotipe_transparent.svg", page,  lambda e: print("Clicked"), button_group)
+            ]),
         ])
     )
 
-ft.app(target=main)
+    
+app(target=main)

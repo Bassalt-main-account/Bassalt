@@ -4,7 +4,7 @@ from assets.colors import COLORS as c
 
 
 # Nuevo widget que también hereda de ThemedWidget
-class ThemedText(Text, ThemedWidget):
+class Text(Text, ThemedWidget):
     def __init__(self, value, page):
         self.page = page
         super().__init__(value=value, size=20, color=self._get_color("text"))

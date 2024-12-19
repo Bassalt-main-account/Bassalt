@@ -12,3 +12,9 @@ class ButtonGroup:
                 button.set_selected(True)
             else:
                 button.set_selected(False)
+        
+    def get_selected_button(self):
+        for button in self.buttons:
+            if button.is_selected:
+                return button
+        return None

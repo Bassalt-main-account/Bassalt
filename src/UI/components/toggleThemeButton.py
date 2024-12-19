@@ -1,9 +1,9 @@
-from .ThemedButton import ThemedButton
+from .Button import Button
 from .ThemedWidget import ThemedWidget
 
-class ToggleThemeButton(ThemedButton):
+class ToggleThemeButton(Button):
     def __init__(self, page):
-        super().__init__("BRIGHTNESS_HIGH_SHARP", self.toggle_theme, page)
+        super().__init__("BRIGHTNESS_HIGH_SHARP", page, self.toggle_theme)
     
     def toggle_theme(self, e):
         self.page.theme_mode = "dark" if self.page.theme_mode == "light" else "light"

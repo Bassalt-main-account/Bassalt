@@ -2,8 +2,8 @@ from flet import Container, Image, Icon
 from .ThemedWidget import ThemedWidget
 from assets.colors import COLORS as c
 
-class ThemedButton(Container, ThemedWidget):
-    def __init__(self, icon, on_click, page, group=None, ratio=1):
+class Button(Container, ThemedWidget):
+    def __init__(self, icon, page, on_click = None, group=None, ratio=1):
         Container.__init__(self)
         ThemedWidget.__init__(self)
         self.page = page
@@ -18,7 +18,6 @@ class ThemedButton(Container, ThemedWidget):
         self.on_click = self.handle_click
         self.on_hover = self._on_hover
         self.is_selected = False
-        # Referencia al grupo, si se proporciona
         self.group = group
         if group:
             group.add_button(self)
@@ -50,13 +49,12 @@ class ThemedButton(Container, ThemedWidget):
             self.is_selected = selected
             self.bgcolor = self._get_color("selected") if selected else self.default_color
         else:
-            self.bgcolor = self.default_color
+            self.bgcolor = self._get_color("hover")
         self.update()
     
     def handle_click(self, e):
         if self.group:
             self.group.select_button(self)
-        else:
             self.set_selected(True)
         
         if callable(self.original_on_click):
