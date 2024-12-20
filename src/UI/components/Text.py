@@ -1,22 +1,34 @@
-from flet import Text
+from flet import Text as FletText
 from .ThemedWidget import ThemedWidget
+from .TextStyle import TextStyle
 from assets.colors import COLORS as c
 
-
-# Nuevo widget que también hereda de ThemedWidget
-class Text(Text, ThemedWidget):
-    def __init__(self, value, page, size=14, font="firasansMedium", color=None):
+class Text(FletText, ThemedWidget):
+    def __init__(self, value, page, size=14, font="firasansMedium", color_key="text"):
+        """
+        Inicializa el widget Text con soporte de temas.
+        """
+        ThemedWidget.__init__(self)  
         self.page = page
-        self.original_size = 14
-        color = color if color is not None else self._get_color("text")
-        super().__init__(value=value, size=size, color=color, font_family=font)
-        ThemedWidget.__init__(self)
-        
-    def _get_color(self, color_key):
-        theme = self.page.theme_mode 
-        return c[theme][color_key]
-    
+
+        if color_key not in c["light"] or color_key not in c["dark"]:
+            raise KeyError(f"La clave '{color_key}' no está definida en los colores.")
+
+        self.text_style = TextStyle(color_key)
+        # Obtiene el color inicial basado en el tema actual
+        color = self.text_style.get_color(self.page.theme_mode)
+
+        # Inicializa el texto de Flet
+        super().__init__(
+            value=value,
+            size=size,
+            color=color,
+            font_family=font,
+        )
+
     def update_theme(self):
-        """Actualiza el color del texto según el tema actual."""
-        self.color = self._get_color("text")
+        """
+        Actualiza el color del texto según el tema actual.
+        """
+        self.color = self.text_style.get_color(self.page.theme_mode)
         self.update()

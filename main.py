@@ -37,11 +37,11 @@ def main(page: Page):
                     Button("EXTENSION_ROUNDED", page, group=button_group),
                 ],spacing=20),
                 Row([
-                    Text("untitled", page),
-                    Text("bassalt.app.untitled", page,color=c[page.theme_mode]["default"]),
+                    Text("untitled", page, color_key="text"),
+                    Text("bassalt.app.untitled", page,color_key="default"),
                 ],spacing=10),
                 Row([
-                    ElevatedButton(content=Text("Publish", page,color=c[page.theme_mode]["text"]),bgcolor="#5D64AC",style=ButtonStyle(padding=15)),
+                    ElevatedButton(content=Text("Publish", page,color_key="text"),bgcolor="#5D64AC",style=ButtonStyle(padding=15)),
                     Button("SHARE_ROUNDED", page),
                     Button("PLAY_ARROW_ROUNDED", page),
                     Button("SETTINGS_ROUNDED", page),
