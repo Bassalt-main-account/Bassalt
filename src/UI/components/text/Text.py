@@ -1,5 +1,5 @@
 from flet import Text as FletText
-from .ThemedWidget import ThemedWidget
+from src.UI.components.theming.ThemedWidget import ThemedWidget
 from .TextStyle import TextStyle
 from assets.colors import COLORS as c
 
@@ -18,7 +18,7 @@ class Text(FletText, ThemedWidget):
         color = self.text_style.get_color(self.page.theme_mode)
 
         # Inicializa el texto de Flet
-        super().__init__(
+        super().__init__(                                                                               
             value=value,
             size=size,
             color=color,

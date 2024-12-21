@@ -1,10 +1,10 @@
 from flet import Container, Image, Icon
-from .ThemedWidget import ThemedWidget
+from src.UI.components.theming.ThemedWidget import ThemedWidget
 from .ButtonStyle import ButtonStyle
 from assets.colors import COLORS as c
 
 class Button(Container, ThemedWidget):
-    def __init__(self, page, icon, on_click = None, group=None, color_key="icon",  bgcolor_key="default", hover_key = "hover", selected_key="selected",  size=40):
+    def __init__(self, page, icon, on_click = None, group=None, color_key="icon",  bgcolor_key="default", hover_key = "hover", selected_key="selected",  size=30):
                 
         ThemedWidget.__init__(self)
         Container.__init__(self)
@@ -50,6 +50,8 @@ class Button(Container, ThemedWidget):
 
     def update_theme(self):
         self.default_color = self.button_style.get_bgcolor(self.page.theme_mode)
+        self.selected_color = self.button_style.get_selected(self.page.theme_mode)
+        self.hover_color = self.button_style.get_hover(self.page.theme_mode)
         self.bgcolor = self.selected_color if self.is_selected else self.default_color
         self.content.color = self.button_style.get_color(self.page.theme_mode)
         self.update()

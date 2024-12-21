@@ -1,5 +1,6 @@
 COLORS = {
     "dark": {
+        "primary": "#3b4187",
         "background": "#101011",
         "hover": "#ffffff",
         "selected": "#ffffff",
@@ -8,6 +9,7 @@ COLORS = {
         "icon": "#101011",
     },
     "light": {
+        "primary": "#5D64AC",
         "background": "#ffffff",
         "hover": "#101011",
         "selected": "#101011",
@@ -16,3 +18,7 @@ COLORS = {
         "icon": "#ffffff",
     }
 }
+
+
+def get_color(theme, color_key):
+    return COLORS[theme][color_key]
