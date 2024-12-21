@@ -3,7 +3,7 @@ from .ThemedWidget import ThemedWidget
 
 class ToggleThemeButton(Button):
     def __init__(self, page):
-        super().__init__("BRIGHTNESS_HIGH_SHARP", page, self.toggle_theme)
+        super().__init__(page, "BRIGHTNESS_HIGH_SHARP", self.toggle_theme)
     
     def toggle_theme(self, e):
         self.page.theme_mode = "dark" if self.page.theme_mode == "light" else "light"

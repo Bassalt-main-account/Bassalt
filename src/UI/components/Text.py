@@ -4,7 +4,7 @@ from .TextStyle import TextStyle
 from assets.colors import COLORS as c
 
 class Text(FletText, ThemedWidget):
-    def __init__(self, value, page, size=14, font="firasansMedium", color_key="text"):
+    def __init__(self, page, value,  size=14, font="firasansMedium", color_key="text"):
         """
         Inicializa el widget Text con soporte de temas.
         """
@@ -15,7 +15,6 @@ class Text(FletText, ThemedWidget):
             raise KeyError(f"La clave '{color_key}' no está definida en los colores.")
 
         self.text_style = TextStyle(color_key)
-        # Obtiene el color inicial basado en el tema actual
         color = self.text_style.get_color(self.page.theme_mode)
 
         # Inicializa el texto de Flet

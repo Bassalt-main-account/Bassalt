@@ -3,9 +3,9 @@ from src.UI.components.Button import Button
 from src.UI.components.ButtonGroup import ButtonGroup
 from src.UI.components.Text import Text
 from src.UI.components.toggleThemeButton import ToggleThemeButton
-from assets.colors import COLORS as c
 
 def main(page: Page):
+    
     page.title = "Bassalt"
     page.window.icon = "isotipe.ico"
     page.theme_mode = "dark"
@@ -19,35 +19,38 @@ def main(page: Page):
 
     # Crear un grupo de botones
     button_group = ButtonGroup()
-
-
         
     # Layout de la página
     page.add(
-        Column([
-            #ToggleThemeButton(page),
-            #Text("Hello, Themed World!", page, 20, "firasansBold"),
+        Column([ 
             Row([
                 Row([
-                    Button("isotipe_transparent.svg", page, group=button_group),
-                    Button("ADD_CIRCLE_ROUNDED", page, group=button_group),
-                    Button("LAYERS_ROUNDED", page, group=button_group),
-                    Button("ALT_ROUTE_ROUNDED", page, group=button_group),
-                    Button("STORAGE_ROUNDED", page, group=button_group),
-                    Button("EXTENSION_ROUNDED", page, group=button_group),
-                ],spacing=20),
+                    Button(page, "isotipe_transparent.svg", group=button_group, color_key="icon", bgcolor_key="default"),
+                    Button(page, "ADD_CIRCLE_ROUNDED", group=button_group),
+                    Button(page, "LAYERS_ROUNDED", group=button_group),
+                    Button(page, "ALT_ROUTE_ROUNDED", group=button_group),
+                    Button(page, "STORAGE_ROUNDED", group=button_group),
+                    Button(page, "EXTENSION_ROUNDED", group=button_group),
+                    ],spacing=20
+                ),
                 Row([
-                    Text("untitled", page, color_key="text"),
-                    Text("bassalt.app.untitled", page,color_key="default"),
-                ],spacing=10),
+                    Text(page, "untitled", color_key="text"),
+                    Text(page, "bassalt.app.untitled", color_key="default"),
+                    ],spacing=10
+                ),
                 Row([
-                    ElevatedButton(content=Text("Publish", page,color_key="text"),bgcolor="#5D64AC",style=ButtonStyle(padding=15)),
-                    Button("SHARE_ROUNDED", page),
-                    Button("PLAY_ARROW_ROUNDED", page),
-                    Button("SETTINGS_ROUNDED", page),
-                    Button("PERSON_ROUNDED", page),
+                    ElevatedButton(
+                        content=Text(page, "Publish", color_key="text"),
+                        bgcolor="#5D64AC",
+                        style=ButtonStyle(padding=15)
+                    ),
+                    Button(page, "SHARE_ROUNDED"),
+                    Button(page, "PLAY_ARROW_ROUNDED"),
+                    Button(page, "SETTINGS_ROUNDED"),   
+                    Button(page, "PERSON_ROUNDED"),
                     ToggleThemeButton(page),
-                ],spacing=20),
+                    ],spacing=20
+                ),
                 
 
             ],alignment="center",spacing=60),

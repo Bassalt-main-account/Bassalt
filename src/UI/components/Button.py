@@ -1,9 +1,10 @@
 from flet import Container, Image, Icon
 from .ThemedWidget import ThemedWidget
+from .ButtonStyle import ButtonStyle
 from assets.colors import COLORS as c
 
 class Button(Container, ThemedWidget):
-    def __init__(self, icon, page, on_click = None, group=None, size=40):
+    def __init__(self, page, icon, on_click = None, group=None, color_key="icon",  bgcolor_key="default", hover_key = "hover", selected_key="selected",  size=40):
                 
         ThemedWidget.__init__(self)
         Container.__init__(self)
@@ -11,8 +12,15 @@ class Button(Container, ThemedWidget):
         self.page = page
         self.icon = icon
         self.size = size
-        self.default_color = self._get_color("default")
-        self.bgcolor = self.default_color
+        
+        #Colors
+        self.button_style = ButtonStyle(color_key, bgcolor_key, hover_key, selected_key)
+        self.color = self.button_style.get_color(self.page.theme_mode)
+        self.bgcolor = self.button_style.get_bgcolor(self.page.theme_mode)
+        self.default_color = self.bgcolor
+        self.hover_color = self.button_style.get_hover(self.page.theme_mode)
+        self.selected_color = self.button_style.get_selected(self.page.theme_mode)
+        
         self.border_radius = self.size * 0.25
         self.width = size 
         self.height = size
@@ -31,29 +39,27 @@ class Button(Container, ThemedWidget):
         return c[theme][color_key]
 
     def _create_content(self, icon):
-        color = self._get_color("icon")
         if icon.endswith(".svg"):
-            return Image(src=f"assets/{icon}", width=self.size * 0.8, height=self.size * 0.8, color=color)
-        return Icon(name=icon, size=self.size * 0.8, color=color)
+            return Image(src=f"assets/{icon}", width=self.size * 0.8, height=self.size * 0.8, color=self.color)
+        return Icon(name=icon, size=self.size * 0.8, color=self.color)
 
     def _on_hover(self, e):
         if not self.is_selected:
-            hover_color = self._get_color("hover")
-            self.bgcolor = hover_color if e.data == "true" else self.default_color
+            self.bgcolor = self.hover_color if e.data == "true" else self.default_color
             self.update()
 
     def update_theme(self):
-        self.default_color = self._get_color("default")
-        self.bgcolor = self.default_color if not self.is_selected else self._get_color("selected")
-        self.content.color = self._get_color("icon")
+        self.default_color = self.button_style.get_bgcolor(self.page.theme_mode)
+        self.bgcolor = self.selected_color if self.is_selected else self.default_color
+        self.content.color = self.button_style.get_color(self.page.theme_mode)
         self.update()
         
     def set_selected(self, selected):
         if self.group:
             self.is_selected = selected
-            self.bgcolor = self._get_color("selected") if selected else self.default_color
+            self.bgcolor = self.button_style.get_selected(self.page.theme_mode) if selected else self.default_color
         else:
-            self.bgcolor = self._get_color("hover")
+            self.bgcolor = self.button_style.get_hover(self.page.theme_mode)
         self.update()
     
     def handle_click(self, e):
