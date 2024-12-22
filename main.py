@@ -20,7 +20,6 @@ def main(page: Page):
 
     # Layout de la página
     page.add(TopMenu(page))
-    page.add
     page.update() 
 
 
