@@ -2,6 +2,7 @@ COLORS = {
     "dark": {
         "primary": "#3b4187",
         "background": "#101011",
+        "background2": "#1E1E1E",
         "hover": "#ffffff",
         "selected": "#ffffff",
         "text": "#ffffff",
@@ -9,8 +10,9 @@ COLORS = {
         "icon": "#101011",
     },
     "light": {
-        "primary": "#5D64AC",
+        "primary": "#7d87db",
         "background": "#ffffff",
+        "background2": "#eeefef",
         "hover": "#101011",
         "selected": "#101011",
         "text": "#101011",
