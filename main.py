@@ -1,5 +1,7 @@
-from flet import Page, app
+from flet import Page, app, AppView, Column, ScrollEvent
 from src.UI.components.menu.TopMenu import TopMenu
+from src.UI.components.menu.BelowBar import BelowBar
+from src.UI.components.screen.Screen import Screen
 from assets.colors import get_color
 
 def main(page: Page):
@@ -18,9 +20,16 @@ def main(page: Page):
         "firasansLight": "fonts/FiraSans-Light.ttf",
     }
 
+
     # Layout de la página
-    page.add(TopMenu(page))
+    page.add(
+        Column([
+            TopMenu(page),
+            Screen(page),
+            BelowBar(page) 
+        ],spacing=35)
+    )
+
     page.update() 
 
-
-app(target=main)
+app(target=main, view=AppView.FLET_APP)
