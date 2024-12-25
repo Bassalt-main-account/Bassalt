@@ -1,12 +1,11 @@
-from flet import Page, app, AppView, Column
+from flet import Page, app, AppView, Column, Container, alignment
 from src.UI.components.menu.TopMenu import TopMenu
 from src.UI.components.menu.BelowBar import BelowBar
 from src.UI.components.screen.Screen import Screen
 from assets.colors import get_color
 
 def main(page: Page):
-    
-    #region Page config
+    # Configuración inicial de la página
     page.title = "Bassalt"
     page.window.icon = "isotipe.ico"
     page.theme_mode = "dark"
@@ -20,16 +19,38 @@ def main(page: Page):
         "firasansLight": "fonts/FiraSans-Light.ttf",
     }
 
+    # Crear componentes principales
+    topMenu = TopMenu(page)
+    screen = Screen(page)
+    belowBar = BelowBar(page, screen)
 
-    # Layout de la página
+    # Estructura principal de la página
     page.add(
-        Column([
-            TopMenu(page),
-            Screen(page),
-            BelowBar(page) 
-        ],spacing=35)
+        Column(
+            [
+                # Menú superior
+                Container(
+                    topMenu,
+                    alignment=alignment.top_center,
+                    expand=False,
+                ),
+                # Contenedor principal con Screen
+                Container(
+                    content=screen,
+                    expand=True,
+                    alignment=alignment.center,
+                ),
+                # Barra inferior
+                Container(
+                    content=Column([belowBar,Container(height=20)]),    
+                    alignment=alignment.bottom_center,
+                    expand=False,
+                ),
+            ],
+            expand=True,
+        )
     )
 
-    page.update() 
+    page.update()
 
 app(target=main, view=AppView.FLET_APP_WEB, assets_dir="assets")
