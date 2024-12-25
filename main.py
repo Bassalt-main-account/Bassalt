@@ -1,4 +1,4 @@
-from flet import Page, app, AppView, Column, ScrollEvent
+from flet import Page, app, AppView, Column
 from src.UI.components.menu.TopMenu import TopMenu
 from src.UI.components.menu.BelowBar import BelowBar
 from src.UI.components.screen.Screen import Screen
@@ -32,4 +32,4 @@ def main(page: Page):
 
     page.update() 
 
-app(target=main, view=AppView.FLET_APP)
+app(target=main, view=AppView.FLET_APP_WEB, assets_dir="assets")

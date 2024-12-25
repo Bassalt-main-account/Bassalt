@@ -18,7 +18,8 @@ class Screen(Row, ThemedWidget):
 
         super().__init__(
             controls=[self.container],
-            alignment="center"
+            alignment="center",
+            expand=True
         )
 
     def update_theme(self):

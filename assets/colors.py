@@ -12,7 +12,7 @@ COLORS = {
     "light": {
         "primary": "#7d87db",
         "background": "#ffffff",
-        "background2": "#eeefef",
+        "background2": "#e4e4e4",
         "hover": "#101011",
         "selected": "#101011",
         "text": "#101011",
