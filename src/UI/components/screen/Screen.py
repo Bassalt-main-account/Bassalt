@@ -1,8 +1,8 @@
-from flet import Container, GestureDetector, Stack, Offset, Scale, Row
+from flet import Container, GestureDetector, Stack, Offset, Scale, Alignment, Row
 from src.UI.components.theming.ThemedWidget import ThemedWidget
 from assets.colors import get_color
 
-class Screen(Row, ThemedWidget):
+class Screen(Container, ThemedWidget):
     def __init__(self, page, width=700, height=400):
         ThemedWidget.__init__(self)
         self.page = page
@@ -22,18 +22,20 @@ class Screen(Row, ThemedWidget):
 
         # Detector de gestos para mover y escalar
         self.screen_gesture = GestureDetector(
-            content=Stack([self.container]),
+            content=self.container,
             on_pan_update=self.move_screen,  # Permite mover el screen
             on_double_tap=self.zoom_in,     # Zoom in con doble clic
             on_secondary_tap=self.zoom_out, # Zoom out con clic derecho
         )
 
         super().__init__(
-            controls=[self.screen_gesture],
-            alignment="center",
-            expand=True
+            content=Row([self.screen_gesture], alignment="center"),
         )
 
+
+    def get_width(self):
+        return self.container.width
+    
     def zoom_in(self, e):
         self.scale_factor += 0.1
         self.update_screen()
