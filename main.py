@@ -24,10 +24,10 @@ def main(page: Page):
     top_menu = TopMenu(page)
 
     screen = Screen(page)
-    screen_container = Container(screen,top=100,left=page.window.width/2-screen.get_width()/2)
+    screen_container = Container(screen,top=100,left=page.width/2-screen.get_width()/2)
 
     below_bar = BelowBar(page, screen)
-    below_bar_container = Container(below_bar,bottom=20,left=page.window.width/2-below_bar.w/2)
+    below_bar_container = Container(below_bar,bottom=20,left=page.width/2-below_bar.w/2)
 
     page.add(
         Stack(
@@ -41,19 +41,14 @@ def main(page: Page):
     )
 
     def resize(e):
-        if str(e.type) in [
-            "WindowEventType.RESIZE",
-            "WindowEventType.RESIZED",
-            "WindowEventType.MINIMIZE",
-            "WindowEventType.MAXIMIZE",
-        ]:
-            screen_container.left = page.window.width/2-screen.get_width()/2
-            below_bar_container.left = page.window.width/2-below_bar.w/2
-            screen_container.update()
-            below_bar_container.update()
 
-    page.window.on_event = resize
+        screen_container.left = e.width/2-screen.get_width()/2
+        below_bar_container.left = e.width/2-below_bar.w/2
+        screen_container.update()
+        below_bar_container.update()
+
+    page.on_resized = resize
     page.update()
 
 
-app(target=main, view=AppView.FLET_APP_WEB, assets_dir="assets")
+app(target=main, view=AppView.WEB_BROWSER, assets_dir="assets")
