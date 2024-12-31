@@ -1,17 +1,15 @@
-from flet import (
-    Page, app, AppView,
-    Stack, Container, Alignment, Row, Border, border
-)
+from flet import Page, app, Stack, Container, Alignment
 from src.UI.components.menu.TopMenu import TopMenu
 from src.UI.components.menu.BelowBar import BelowBar
 from src.UI.components.screen.Screen import Screen
 from assets.colors import get_color
 
-def main(page: Page):
+def configure_page(page: Page):
     page.title = "Bassalt"
     page.window.icon = "isotipe.ico"
     page.theme_mode = "dark"
     page.bgcolor = get_color(page.theme_mode, "background2")
+    page.window.maximized = True
     page.padding = 0
     page.horizontal_alignment = "center"
     page.fonts = {
@@ -22,26 +20,24 @@ def main(page: Page):
         "firasansLight": "fonts/FiraSans-Light.ttf",
     }
 
-    top_menu = TopMenu(page)
-    top_menu_container = Container(top_menu,top=0)
-
-    screen = Screen(page)
-    screen_container = Container(screen,top=100)
-
-    below_bar = BelowBar(page, screen)
-    below_bar_container = Container(below_bar,bottom=20)
-
-    page.add(
-        Stack(
-            controls=[
-                screen_container, 
-                top_menu_container,
-                below_bar_container
-            ],
-            expand=True,
-            expand_loose=True,
-            alignment=Alignment(0,0)
-        )
+def build_main_stack(page: Page) -> Stack:
+    top_menu_container = Container(TopMenu(page))
+    screen_container = Container(Screen(page), top=100)
+    below_bar_container = Container(BelowBar(page, screen_container.content), bottom=20)
+    return Stack(
+        controls=[
+            Stack(
+                controls=[screen_container, below_bar_container],
+                expand=True,
+                alignment=Alignment(0, 0),
+            ),
+            top_menu_container
+        ],
+        expand=True,
     )
 
-app(target=main, view=AppView.FLET_APP_WEB, assets_dir="assets")
+def main(page: Page):
+    configure_page(page)
+    page.add(build_main_stack(page))
+
+app(target=main, assets_dir="assets")
