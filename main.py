@@ -22,13 +22,14 @@ def configure_page(page: Page):
 
 def build_main_stack(page: Page) -> Stack:
     top_menu_container = Container(TopMenu(page))
-    screen_container = Container(Screen(page), top=100)
+    screen_container = Container(Screen(page), top=0, left=0, right=0, bottom=0)
     below_bar_container = Container(BelowBar(page, screen_container.content), bottom=20)
     return Stack(
         controls=[
             Stack(
                 controls=[screen_container, below_bar_container],
                 expand=True,
+                expand_loose=True,
                 alignment=Alignment(0, 0),
             ),
             top_menu_container
