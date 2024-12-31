@@ -1,6 +1,6 @@
 from flet import (
     Page, app, AppView,
-    Stack, Container
+    Stack, Container, Alignment, Row, Border, border
 )
 from src.UI.components.menu.TopMenu import TopMenu
 from src.UI.components.menu.BelowBar import BelowBar
@@ -13,6 +13,7 @@ def main(page: Page):
     page.theme_mode = "dark"
     page.bgcolor = get_color(page.theme_mode, "background2")
     page.padding = 0
+    page.horizontal_alignment = "center"
     page.fonts = {
         "firasansBold": "fonts/FiraSans-Bold.ttf",
         "firasansSemiBold": "fonts/FiraSans-SemiBold.ttf",
@@ -22,33 +23,25 @@ def main(page: Page):
     }
 
     top_menu = TopMenu(page)
+    top_menu_container = Container(top_menu,top=0)
 
     screen = Screen(page)
-    screen_container = Container(screen,top=100,left=page.width/2-screen.get_width()/2)
+    screen_container = Container(screen,top=100)
 
     below_bar = BelowBar(page, screen)
-    below_bar_container = Container(below_bar,bottom=20,left=page.width/2-below_bar.w/2)
+    below_bar_container = Container(below_bar,bottom=20)
 
     page.add(
         Stack(
             controls=[
                 screen_container, 
-                top_menu,
+                top_menu_container,
                 below_bar_container
             ],
             expand=True,
+            expand_loose=True,
+            alignment=Alignment(0,0)
         )
     )
 
-    def resize(e):
-
-        screen_container.left = e.width/2-screen.get_width()/2
-        below_bar_container.left = e.width/2-below_bar.w/2
-        screen_container.update()
-        below_bar_container.update()
-
-    page.on_resized = resize
-    page.update()
-
-
-app(target=main, view=AppView.WEB_BROWSER, assets_dir="assets")
+app(target=main, view=AppView.FLET_APP_WEB, assets_dir="assets")

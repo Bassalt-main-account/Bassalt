@@ -33,12 +33,12 @@ class TopMenu(Container, ThemedWidget):
                 Button(page, "ALT_ROUTE_ROUNDED", group=button_group),
                 Button(page, "STORAGE_ROUNDED", group=button_group),
                 Button(page, "EXTENSION_ROUNDED", group=button_group),
-                ],spacing=25
+                ],spacing=25,
             ),
             Row([
                 Text(page, "untitled", color_key="text"),
                 Text(page, "bassalt.app.untitled", color_key="default"),
-                ],spacing=10
+                ],spacing=10,
             ),
             Row([
                 self.publish_button,
@@ -47,15 +47,18 @@ class TopMenu(Container, ThemedWidget):
                 Button(page, "SETTINGS_ROUNDED"),   
                 Button(page, "PERSON_ROUNDED"),
                 ToggleThemeButton(page),
-                ],spacing=25
+                ],spacing=25,
             ),
         ],
         alignment="center",
         spacing=60,
+        expand=True,
+        expand_loose=True,
         )
         
         self.bgcolor = get_color(page.theme_mode, "background")
         self.padding = 20
+        
 
 
     def update_theme(self):
@@ -63,6 +66,7 @@ class TopMenu(Container, ThemedWidget):
         self.publish_button.bgcolor=get_color(self.page.theme_mode, "primary")
         self.publish_button.update()
         self.update()
-        
 
-
+    def set_top(self, top):
+        self.top = top
+        self.update()
