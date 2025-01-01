@@ -50,7 +50,7 @@ class TopMenu(Container, ThemedWidget):
                 ],spacing=25,
             ),
         ],
-        alignment="center",
+        alignment="spaceBetween",
         spacing=60,
         expand=True,
         expand_loose=True,

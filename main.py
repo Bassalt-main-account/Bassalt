@@ -2,6 +2,7 @@ from flet import Page, app, Stack, Container, Alignment
 from src.UI.components.menu.TopMenu import TopMenu
 from src.UI.components.menu.BelowBar import BelowBar
 from src.UI.components.screen.Screen import Screen
+from src.UI.components.SideMenus.add import AddMenu
 from assets.colors import get_color
 
 def configure_page(page: Page):
@@ -24,10 +25,11 @@ def build_main_stack(page: Page) -> Stack:
     top_menu_container = Container(TopMenu(page))
     screen_container = Container(Screen(page), top=0, left=0, right=0, bottom=0)
     below_bar_container = Container(BelowBar(page, screen_container.content), bottom=20)
+    add_menu_container = Container(AddMenu(page),left=20)
     return Stack(
         controls=[
             Stack(
-                controls=[screen_container, below_bar_container],
+                controls=[screen_container, below_bar_container, add_menu_container],
                 expand=True,
                 expand_loose=True,
                 alignment=Alignment(0, 0),
