@@ -36,8 +36,10 @@ class TopMenu(Container, ThemedWidget):
                 ],spacing=25,
             ),
             Row([
+                Row(width=10),
                 Text(page, "untitled", color_key="text"),
                 Text(page, "bassalt.app.untitled", color_key="default"),
+                Row(width=10)
                 ],spacing=10,
             ),
             Row([
@@ -67,6 +69,3 @@ class TopMenu(Container, ThemedWidget):
         self.publish_button.update()
         self.update()
 
-    def set_top(self, top):
-        self.top = top
-        self.update()

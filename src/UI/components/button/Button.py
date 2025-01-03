@@ -1,4 +1,4 @@
-from flet import Container, Image, Icon
+from flet import Container, Image, Icon, ImageFit
 from src.UI.components.theming.ThemedWidget import ThemedWidget
 from .ButtonStyle import ButtonStyle
 from assets.colors import COLORS as c
@@ -40,7 +40,7 @@ class Button(Container, ThemedWidget):
 
     def _create_content(self, icon):
         if icon.endswith(".svg"):
-            return Image(src=icon, width=self.size * 0.8, height=self.size * 0.8, color=self.color)
+            return Image(src="icons/"+icon, width=self.size * 0.8, height=self.size * 0.8, color=self.color, fit=ImageFit.FIT_WIDTH)
         return Icon(name=icon, size=self.size * 0.8, color=self.color)
 
     def _on_hover(self, e):
