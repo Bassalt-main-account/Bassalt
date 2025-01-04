@@ -7,7 +7,7 @@ from src.data.assets import assets, assets_icons
 
 class AddMenu(Container, ThemedWidget):
     def __init__(self, page):
-        ThemedWidget.__init__(self)
+        ThemedWidget.__init__(self,"ADD")
         self.page = page
 
         color = get_color(self.page.theme_mode, "background")
@@ -23,7 +23,6 @@ class AddMenu(Container, ThemedWidget):
         )
             
         
-
         super().__init__(
             content=self.rows,
             bgcolor=color,
