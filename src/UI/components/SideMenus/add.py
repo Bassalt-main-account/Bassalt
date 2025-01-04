@@ -65,7 +65,7 @@ class AddMenu(Container, ThemedWidget):
 
         # Encabezado (botón de toggle + texto de la sección).
         panel_header = Row([
-            Button(self.page, icon_key, on_click=toggle_visibility),
+            Button(self.page, icon_key, on_click=toggle_visibility, selectable=True),
             Text(self.page, title)
         ])
 
@@ -75,7 +75,7 @@ class AddMenu(Container, ThemedWidget):
                 panel_header,
                 item_container,
             ]),
-            padding=10,
+            padding=padding.symmetric(10, 20)
         )
 
     def update_theme(self):

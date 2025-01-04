@@ -4,7 +4,7 @@ from .ButtonStyle import ButtonStyle
 from assets.colors import COLORS as c
 
 class Button(Container, ThemedWidget):
-    def __init__(self, page, icon, on_click = None, group=None, color_key="icon",  bgcolor_key="default", hover_key = "hover", selected_key="selected",  size=30):
+    def __init__(self, page, icon, on_click = None, group=None, selectable = False, color_key="icon",  bgcolor_key="default", hover_key = "hover", selected_key="selected",  size=30):
                 
         ThemedWidget.__init__(self)
         Container.__init__(self)
@@ -12,6 +12,7 @@ class Button(Container, ThemedWidget):
         self.page = page
         self.icon = icon
         self.size = size
+        self.selectable = selectable
         
         #Colors
         self.button_style = ButtonStyle(color_key, bgcolor_key, hover_key, selected_key)
@@ -20,6 +21,7 @@ class Button(Container, ThemedWidget):
         self.default_color = self.bgcolor
         self.hover_color = self.button_style.get_hover(self.page.theme_mode)
         self.selected_color = self.button_style.get_selected(self.page.theme_mode)
+        
         
         self.border_radius = self.size * 0.25
         self.width = size 
@@ -40,8 +42,10 @@ class Button(Container, ThemedWidget):
 
     def _create_content(self, icon):
         if icon.endswith(".svg"):
-            return Image(src="icons/"+icon, width=self.size * 0.8, height=self.size * 0.8, color=self.color, fit=ImageFit.FIT_WIDTH)
-        return Icon(name=icon, size=self.size * 0.8, color=self.color)
+            self.padding = self.size * 0.1
+            return Image(src="icons/"+icon,  color=self.color)
+        
+        return Icon(name=icon, color=self.color, size=self.size*0.8)
 
     def _on_hover(self, e):
         if not self.is_selected:
@@ -68,6 +72,10 @@ class Button(Container, ThemedWidget):
         if self.group:
             self.group.select_button(self)
             self.set_selected(True)
+        elif self.selectable:
+            self.is_selected = not self.is_selected
+            self.bgcolor = self.selected_color if self.is_selected else self.default_color
+            self.update()
         
         if callable(self.original_on_click):
             self.original_on_click(e)
