@@ -5,7 +5,7 @@ from assets.colors import COLORS as c
 
 class Button(Container, ThemedWidget):
     def __init__(self, page, icon, on_click = None, group=None, selectable = False, color_key="icon",  bgcolor_key="default", hover_key = "hover", selected_key="selected",  size=30):
-                
+
         ThemedWidget.__init__(self)
         Container.__init__(self)
         
@@ -13,7 +13,7 @@ class Button(Container, ThemedWidget):
         self.icon = icon
         self.size = size
         self.selectable = selectable
-        
+
         #Colors
         self.button_style = ButtonStyle(color_key, bgcolor_key, hover_key, selected_key)
         self.color = self.button_style.get_color(self.page.theme_mode)

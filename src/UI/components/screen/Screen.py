@@ -8,6 +8,7 @@ from flet import (
     DragUpdateEvent,
 )
 from src.UI.components.theming.ThemedWidget import ThemedWidget
+from src.UI.components.text.Text import Text
 from assets.colors import get_color
 
 class Screen(Container, ThemedWidget):
@@ -31,9 +32,11 @@ class Screen(Container, ThemedWidget):
 
         # Contenedor visual (fondo)
         self.background_container = Container(
+            content=Text(page,"Screen Example"),
             bgcolor=color,
             width=width,
-            height=height
+            height=height,
+            padding=20
         )
 
         # GestureDetector que envuelve el contenedor:
