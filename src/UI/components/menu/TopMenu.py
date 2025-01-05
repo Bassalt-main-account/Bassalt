@@ -15,7 +15,11 @@ class TopMenu(Container, ThemedWidget):
         Container.__init__(self)
         self.page = page
         self.current_menu = None
-        
+
+        self.add_in_page = False
+        self.add_menu_container = Container(AddMenu(self.page),left=20,visible=False,data="ADD")
+
+
         # Crear un grupo de botones
         button_group = ButtonGroup()
 
@@ -64,35 +68,41 @@ class TopMenu(Container, ThemedWidget):
         self.padding = 20
         
 
-
     def update_theme(self):
         self.bgcolor = get_color(self.page.theme_mode, "background")
         self.publish_button.bgcolor=get_color(self.page.theme_mode, "primary")
         self.publish_button.update()
         self.update()
 
+
     def add_button_on_click(self, e):
-        if self.current_menu != "ADD":
-            self.empty_menus(e)
-            add_menu_container = Container(AddMenu(self.page),left=20)
-            self.page.controls[0].controls[0].controls.append(add_menu_container)
-            self.page.update()
-            self.current_menu = "ADD"
+        
+        if self.current_menu != "ADD": 
+            self.current_menu = "ADD"           
+            self.select_menu()
+            
 
-    def empty_menus(self, e):
-        try:
-            self.current_menu = None
-            # Intenta eliminar el control de la página
-            self.page.controls[0].controls[0].controls.pop(2)
-            self.page.update()
-        except Exception:
-            pass
+    def empty_menus(self, e):  
+        # Hacer inivisbles todos los menús 
+        self.current_menu = None
+        self.add_menu_container.visible = False
+        self.add_menu_container.update()
 
-    
-        if "ADD" in self._observers_id:
-            index = self._observers_id.index("ADD")  # Encuentra el índice del ID
-            self._observers_id.pop(index)  # Elimina el ID de observers_id
-            self._observers.pop(index)  # Elimina el observer correspondiente
 
-        print(self._observers_id)
-        print(self._observers)
+    def select_menu(self):  
+        # Hacer inivisbles todos los menús menos el elegido
+        selected = self.current_menu
+        menus = self.page.controls[0].controls[0].controls[2:]
+
+        for m in menus:
+            if m.data == selected:
+                m.visible = True
+            else:
+                m.visible = False
+            m.update()
+
+
+    def load_menus(self):   
+        #Aqui se añadiran los futurosmenus             
+        self.page.controls[0].controls[0].controls.append(self.add_menu_container)
+        self.page.update()

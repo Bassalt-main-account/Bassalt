@@ -7,7 +7,7 @@ from src.data.assets import assets, assets_icons
 
 class AddMenu(Container, ThemedWidget):
     def __init__(self, page):
-        ThemedWidget.__init__(self,"ADD")
+        ThemedWidget.__init__(self)
         self.page = page
 
         color = get_color(self.page.theme_mode, "background")
@@ -28,7 +28,7 @@ class AddMenu(Container, ThemedWidget):
             bgcolor=color,
             padding=padding.symmetric(20, 20),
             border_radius=15,
-            height=500,  # Limita la altura del contenedor principal
+            height=600,  # Limita la altura del contenedor principal
         )
 
     def create_expansion_panel(self, title, items):
@@ -64,8 +64,8 @@ class AddMenu(Container, ThemedWidget):
 
         # Encabezado (botón de toggle + texto de la sección).
         panel_header = Row([
-            Button(self.page, icon_key, on_click=toggle_visibility, selectable=True),
-            Text(self.page, title)
+            Button(self.page, icon_key, on_click=toggle_visibility, selectable=True),  # Ícono de la sección
+            Text(self.page, title),  # Texto de la sección
         ])
 
         # Retornamos el contenedor con el encabezado y los subitems.

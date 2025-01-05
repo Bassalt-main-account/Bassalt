@@ -4,7 +4,7 @@ from .TextStyle import TextStyle
 from assets.colors import COLORS as c
 
 class Text(FletText, ThemedWidget):
-    def __init__(self, page, value,  size=14, font="firasansMedium", color_key="text"):
+    def __init__(self, page, value, size=14, font="firasansMedium", color_key="text"):
         """
         Inicializa el widget Text con soporte de temas.
         """

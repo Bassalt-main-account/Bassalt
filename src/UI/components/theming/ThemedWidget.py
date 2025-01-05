@@ -5,11 +5,10 @@ class ThemedWidget:
     _observers = []
     _observers_id = []
 
-    def __init__(self,id=None):
+    def __init__(self,):
         # Registramos el widget actual en la lista global
         super().__init__()  # Llamada a super para soporte de herencia múltiple
         ThemedWidget._observers.append(self)
-        ThemedWidget._observers_id.append(id)
 
     def update_theme(self):
         """Método abstracto para actualizar el tema. Debe implementarse en clases hijas."""
@@ -19,4 +18,7 @@ class ThemedWidget:
     def update_all(cls):
         """Actualiza el tema de todos los widgets observadores."""
         for widget in cls._observers:
-            widget.update_theme()
+            try:
+                widget.update_theme()
+            except Exception as e:
+                print(f"Widget: {widget} not added to the page")

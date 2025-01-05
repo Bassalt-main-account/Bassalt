@@ -42,6 +42,9 @@ def build_main_stack(page: Page) -> Stack:
         )
     )
 
+    top_menu_container.content.load_menus()
+    
+
 def main(page: Page):
     configure_page(page)
     build_main_stack(page)

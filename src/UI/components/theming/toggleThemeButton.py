@@ -4,7 +4,7 @@ from assets.colors import get_color
 
 class ToggleThemeButton(Button):
     def __init__(self, page):
-        super().__init__(page, "BRIGHTNESS_5", self.toggle_theme)
+        super().__init__(page, "BRIGHTNESS_5", on_click=self.toggle_theme)
     
     def toggle_theme(self, e):
         self.page.theme_mode = "dark" if self.page.theme_mode == "light" else "light"
