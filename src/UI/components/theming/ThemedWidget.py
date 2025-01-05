@@ -18,7 +18,4 @@ class ThemedWidget:
     def update_all(cls):
         """Actualiza el tema de todos los widgets observadores."""
         for widget in cls._observers:
-            try:
-                widget.update_theme()
-            except Exception as e:
-                print(f"Widget: {widget} not added to the page")
+            widget.update_theme()

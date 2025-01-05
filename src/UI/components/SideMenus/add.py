@@ -13,6 +13,7 @@ class AddMenu(Container, ThemedWidget):
         color = get_color(self.page.theme_mode, "background")
 
         # Construimos la columna principal con la lista de paneles.
+
         self.rows = Column(
             [
                 self.create_expansion_panel(title, items)
