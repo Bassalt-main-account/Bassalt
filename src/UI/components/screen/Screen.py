@@ -11,7 +11,7 @@ from src.UI.components.theming.ThemedWidget import ThemedWidget
 from assets.colors import get_color
 
 class Screen(Container, ThemedWidget):
-    def __init__(self, page, width=700, height=400):
+    def __init__(self, page, width=850, height=550):
         ThemedWidget.__init__(self)
         self.page = page
         
