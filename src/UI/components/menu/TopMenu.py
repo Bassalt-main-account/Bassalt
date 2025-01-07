@@ -5,6 +5,7 @@ from src.UI.components.button.ButtonGroup import ButtonGroup
 from src.UI.components.text.Text import Text
 from src.UI.components.theming.toggleThemeButton import ToggleThemeButton
 from src.UI.components.SideMenus.add import AddMenu
+from src.UI.components.SideMenus.layers import Layers
 from assets.colors import get_color 
 
 
@@ -17,14 +18,14 @@ class TopMenu(Container, ThemedWidget):
         self.current_menu = None
 
         self.add_in_page = False
-        self.add_menu_container = Container(AddMenu(self.page),left=20,visible=False,data="ADD")
+        self.add_menu_container = Container(AddMenu(self.page),left=20,visible=False, data="ADD")
+        self.layers_menu_container = Container(Layers(self.page),left=20,visible=False, data="LAYERS")
 
 
         # Crear un grupo de botones
         button_group = ButtonGroup()
 
-        #region Top Menu
-        
+        #region Top Menu        
         self.publish_button = ElevatedButton(
             content=Text(page, "Publish", color_key="text"),
             bgcolor=get_color(page.theme_mode, "primary"),
@@ -35,7 +36,7 @@ class TopMenu(Container, ThemedWidget):
             Row([
                 Button(page, "isotipe_transparent.svg", group=button_group, on_click=self.empty_menus),
                 Button(page, "ADD_CIRCLE_ROUNDED", group=button_group, on_click=self.add_button_on_click),
-                Button(page, "LAYERS_ROUNDED", group=button_group, on_click=self.empty_menus),
+                Button(page, "LAYERS_ROUNDED", group=button_group, on_click=self.layers_button_on_click),
                 Button(page, "ALT_ROUTE_ROUNDED", group=button_group, on_click=self.empty_menus),
                 Button(page, "STORAGE_ROUNDED", group=button_group, on_click=self.empty_menus),
                 Button(page, "EXTENSION_ROUNDED", group=button_group, on_click=self.empty_menus),
@@ -75,25 +76,24 @@ class TopMenu(Container, ThemedWidget):
         self.update()
 
 
-    def add_button_on_click(self, e):
-        
+    def add_button_on_click(self, e):        
         if self.current_menu != "ADD": 
             self.current_menu = "ADD"           
             self.select_menu()
             
-
+    def layers_button_on_click(self, e):        
+        if self.current_menu != "LAYERS": 
+            self.current_menu = "LAYERS"           
+            self.select_menu()
+            
     def empty_menus(self, e):  
-        # Hacer inivisbles todos los menús 
         self.current_menu = None
-        self.add_menu_container.visible = False
-        self.add_menu_container.update()
+        self.select_menu()
 
 
     def select_menu(self):  
-        # Hacer inivisbles todos los menús menos el elegido
         selected = self.current_menu
         menus = self.page.controls[0].controls[0].controls[2:]
-
         for m in menus:
             if m.data == selected:
                 m.visible = True
@@ -102,7 +102,7 @@ class TopMenu(Container, ThemedWidget):
             m.update()
 
 
-    def load_menus(self):   
-        #Aqui se añadiran los futurosmenus             
+    def load_menus(self):           
         self.page.controls[0].controls[0].controls.append(self.add_menu_container)
+        self.page.controls[0].controls[0].controls.append(self.layers_menu_container)
         self.page.update()

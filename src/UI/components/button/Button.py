@@ -4,7 +4,7 @@ from .ButtonStyle import ButtonStyle
 from assets.colors import COLORS as c
 
 class Button(Container, ThemedWidget):
-    def __init__(self, page, icon, on_click = None, group=None, selectable = False, color_key="icon",  bgcolor_key="default", hover_key = "hover", selected_key="selected",  size=30):
+    def __init__(self, page, icon, on_click = None, group=None, selectable = False, color_key="icon",  bgcolor_key="default", hover_key = "hover", selected_key="selected", size=30, right=None, left=None, top=None, bottom=None):
 
         ThemedWidget.__init__(self)
         Container.__init__(self)
@@ -34,6 +34,11 @@ class Button(Container, ThemedWidget):
         self.group = group
         if group:
             group.add_button(self)
+            
+        self.top = top
+        self.bottom = bottom
+        self.left = left
+        self.right = right
         
         
     def _get_color(self, color_key):
@@ -52,6 +57,7 @@ class Button(Container, ThemedWidget):
             self.bgcolor = self.hover_color if e.data == "true" else self.default_color
             self.update()
 
+
     def update_theme(self):
         self.default_color = self.button_style.get_bgcolor(self.page.theme_mode)
         self.selected_color = self.button_style.get_selected(self.page.theme_mode)
@@ -61,11 +67,14 @@ class Button(Container, ThemedWidget):
         self.update()
         
     def set_selected(self, selected):
+        #Set group selected button
         if self.group:
             self.is_selected = selected
             self.bgcolor = self.button_style.get_selected(self.page.theme_mode) if selected else self.default_color
         else:
             self.bgcolor = self.button_style.get_hover(self.page.theme_mode)
+            
+
         self.update()
     
     def handle_click(self, e):

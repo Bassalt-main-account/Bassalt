@@ -1,4 +1,4 @@
-from flet import Container, Row, Column, ScrollMode, padding
+from flet import Container, Row, Column, ScrollMode, padding, Stack
 from src.UI.components.theming.ThemedWidget import ThemedWidget
 from src.UI.components.button.Button import Button
 from src.UI.components.text.Text import Text
@@ -13,7 +13,6 @@ class AddMenu(Container, ThemedWidget):
         color = get_color(self.page.theme_mode, "background")
 
         # Construimos la columna principal con la lista de paneles.
-
         self.rows = Column(
             [
                 self.create_expansion_panel(title, items)
@@ -22,16 +21,21 @@ class AddMenu(Container, ThemedWidget):
             ],
             scroll=ScrollMode.ALWAYS  # Activamos scroll para el contenedor principal
         )
-            
+        
+        content = Container(
+            content=self.rows,
+            padding=padding.symmetric(30, 30),
+        )   
         
         super().__init__(
-            content=self.rows,
+            content=Stack([content, Button(self.page, "CLOSE_ROUNDED",size=20, right=0, top=0)]),
             bgcolor=color,
             padding=padding.symmetric(20, 20),
             border_radius=15,
-            height=600,  # Limita la altura del contenedor principal
+            height=700,  # Limita la altura del contenedor principal
         )
-
+        
+        
     def create_expansion_panel(self, title, items):
         """
         Crea un panel desplegable para cada sección (p.ej., "Basics"),
@@ -50,7 +54,7 @@ class AddMenu(Container, ThemedWidget):
                 Row([
                     Container(width=20),
                     Button(self.page, sub_icons[i]),  # Ícono proveniente de la lista sub_icons
-                    Text(self.page, item),            # Texto del subitem
+                    Text(self.page, item, color_key="text2",size=16),            # Texto del subitem
                     Container(width=20)
                 ])
                 for i, item in enumerate(items)
@@ -58,15 +62,21 @@ class AddMenu(Container, ThemedWidget):
             visible=False
         )
 
-        def toggle_visibility(e):
+        def toggle_visibility():
             """Muestra/oculta el contenedor de subitems al hacer clic en el botón."""
             item_container.visible = not item_container.visible
             item_container.update()
 
         # Encabezado (botón de toggle + texto de la sección).
+        text = Text(self.page, title, size=18, color_key="text2")
+        
+        def click(e):
+            toggle_visibility()
+            text.toggle_selected()
+        
         panel_header = Row([
-            Button(self.page, icon_key, on_click=toggle_visibility, selectable=True),  # Ícono de la sección
-            Text(self.page, title),  # Texto de la sección
+            Button(self.page, icon_key, on_click=click, selectable=True, size=40),  # Ícono de la sección
+            text,  # Texto de la sección
         ])
 
         # Retornamos el contenedor con el encabezado y los subitems.

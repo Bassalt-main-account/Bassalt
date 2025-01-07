@@ -6,6 +6,7 @@ COLORS = {
         "hover": "#ffffff",
         "selected": "#ffffff",
         "text": "#ffffff",
+        "text2": "#898889",
         "default": "#898889",
         "icon": "#101011",
     },
@@ -16,6 +17,7 @@ COLORS = {
         "hover": "#101011",
         "selected": "#101011",
         "text": "#101011",
+        "text2": "#898889",
         "default": "#898889",
         "icon": "#ffffff",
     }
