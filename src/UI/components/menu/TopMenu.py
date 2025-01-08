@@ -18,8 +18,8 @@ class TopMenu(Container, ThemedWidget):
         self.current_menu = None
 
         self.add_in_page = False
-        self.add_menu_container = Container(AddMenu(self.page),left=20,visible=False, data="ADD")
-        self.layers_menu_container = Container(Layers(self.page),left=20,visible=False, data="LAYERS")
+        self.add_menu_container = Container(AddMenu(self.page, self.empty_menus),left=20,visible=False, data="ADD")
+        self.layers_menu_container = Container(Layers(self.page, self.empty_menus),left=20,visible=False, data="LAYERS")
 
 
         # Crear un grupo de botones
@@ -34,12 +34,12 @@ class TopMenu(Container, ThemedWidget):
         
         self.content = Row([
             Row([
-                Button(page, "isotipe_transparent.svg", group=button_group, on_click=self.empty_menus),
+                Button(page, "isotipe_transparent.svg", group=button_group, on_click=self.empty_menus), #TEMPORAL
                 Button(page, "ADD_CIRCLE_ROUNDED", group=button_group, on_click=self.add_button_on_click),
                 Button(page, "LAYERS_ROUNDED", group=button_group, on_click=self.layers_button_on_click),
-                Button(page, "ALT_ROUTE_ROUNDED", group=button_group, on_click=self.empty_menus),
-                Button(page, "STORAGE_ROUNDED", group=button_group, on_click=self.empty_menus),
-                Button(page, "EXTENSION_ROUNDED", group=button_group, on_click=self.empty_menus),
+                Button(page, "ALT_ROUTE_ROUNDED", group=button_group, on_click=self.empty_menus), #TEMPORAL
+                Button(page, "STORAGE_ROUNDED", group=button_group, on_click=self.empty_menus), #TEMPORAL
+                Button(page, "EXTENSION_ROUNDED", group=button_group, on_click=self.empty_menus), #TEMPORAL
                 ],spacing=25,
             ),
             Row([
@@ -88,8 +88,11 @@ class TopMenu(Container, ThemedWidget):
             
     def empty_menus(self, e):  
         self.current_menu = None
+        e.control.bgcolor = e.control.button_style.get_bgcolor(self.page.theme_mode) # Restaurar el color del boton
+        e.control.update()
+        self.unselect_buttons()
         self.select_menu()
-
+        
 
     def select_menu(self):  
         selected = self.current_menu
@@ -101,6 +104,10 @@ class TopMenu(Container, ThemedWidget):
                 m.visible = False
             m.update()
 
+    def unselect_buttons(self):
+        buttons = self.content.controls[0].controls
+        for b in buttons:
+            b.set_selected(False)
 
     def load_menus(self):           
         self.page.controls[0].controls[0].controls.append(self.add_menu_container)

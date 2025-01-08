@@ -1,4 +1,4 @@
-from flet import Page, app, Stack, Container, Alignment
+from flet import Page, app, Stack, Container, Alignment, AppView
 from src.UI.components.menu.TopMenu import TopMenu
 from src.UI.components.menu.BelowBar import BelowBar
 from src.UI.components.screen.Screen import Screen
@@ -53,4 +53,4 @@ def main(page: Page):
 
     
 
-app(target=main, assets_dir="assets")
+app(target=main, assets_dir="assets", view=AppView.WEB_BROWSER)

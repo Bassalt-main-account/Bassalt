@@ -6,7 +6,7 @@ from assets.colors import get_color
 from src.data.assets import assets, assets_icons
 
 class AddMenu(Container, ThemedWidget):
-    def __init__(self, page):
+    def __init__(self, page, close_menu):
         ThemedWidget.__init__(self)
         self.page = page
 
@@ -28,7 +28,7 @@ class AddMenu(Container, ThemedWidget):
         )   
         
         super().__init__(
-            content=Stack([content, Button(self.page, "CLOSE_ROUNDED",size=20, right=0, top=0)]),
+            content=Stack([content, Button(self.page, "CLOSE_ROUNDED",size=20, right=0, top=0, on_click=close_menu)]),
             bgcolor=color,
             padding=padding.symmetric(20, 20),
             border_radius=15,

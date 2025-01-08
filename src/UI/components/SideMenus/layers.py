@@ -5,7 +5,7 @@ from src.UI.components.text.Text import Text
 from assets.colors import get_color
 
 class Layers(Container, ThemedWidget):
-    def __init__(self, page):
+    def __init__(self, page, close_menu):
         ThemedWidget.__init__(self)
         self.page = page
 
