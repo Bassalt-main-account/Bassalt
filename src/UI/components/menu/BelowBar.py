@@ -11,8 +11,8 @@ class BelowBar(Row, ThemedWidget):
         self.w = 400
 
         self.buttons = Row([
-            Button(page,"ZOOM_IN", screen.zoom_in),
-            Button(page,"ZOOM_OUT", screen.zoom_out),
+            Button(page,icon="ZOOM_IN", on_click=screen.zoom_in),
+            Button(page,icon="ZOOM_OUT", on_click=screen.zoom_out),
         ], alignment="center", spacing=10)
 
         color = get_color(self.page.theme_mode, "background")

@@ -27,34 +27,34 @@ class TopMenu(Container, ThemedWidget):
 
         #region Top Menu        
         self.publish_button = ElevatedButton(
-            content=Text(page, "Publish", color_key="text"),
+            content=Text(page, value="Publish", color_key="text"),
             bgcolor=get_color(page.theme_mode, "primary"),
             style=ButtonStyle(padding=15)
         )
         
         self.content = Row([
             Row([
-                Button(page, "isotipe_transparent.svg", group=button_group, on_click=self.empty_menus), #TEMPORAL
-                Button(page, "ADD_CIRCLE_ROUNDED", group=button_group, on_click=self.add_button_on_click),
-                Button(page, "LAYERS_ROUNDED", group=button_group, on_click=self.layers_button_on_click),
-                Button(page, "ALT_ROUTE_ROUNDED", group=button_group, on_click=self.empty_menus), #TEMPORAL
-                Button(page, "STORAGE_ROUNDED", group=button_group, on_click=self.empty_menus), #TEMPORAL
-                Button(page, "EXTENSION_ROUNDED", group=button_group, on_click=self.empty_menus), #TEMPORAL
+                Button(page, icon="isotipe_transparent.svg", group=button_group, on_click=self.empty_menus), #TEMPORAL
+                Button(page, icon="ADD_CIRCLE_ROUNDED", group=button_group, on_click=self.add_button_on_click),
+                Button(page, icon="LAYERS_ROUNDED", group=button_group, on_click=self.layers_button_on_click),
+                Button(page, icon="ALT_ROUTE_ROUNDED", group=button_group, on_click=self.empty_menus), #TEMPORAL
+                Button(page, icon="STORAGE_ROUNDED", group=button_group, on_click=self.empty_menus), #TEMPORAL
+                Button(page, icon="EXTENSION_ROUNDED", group=button_group, on_click=self.empty_menus), #TEMPORAL
                 ],spacing=25,
             ),
             Row([
                 Row(width=10),
-                Text(page, "untitled", color_key="text"),
-                Text(page, "bassalt.app.untitled", color_key="default"),
+                Text(page, value="untitled", color_key="text"),
+                Text(page, value="bassalt.app.untitled", color_key="default"),
                 Row(width=10)
                 ],spacing=10,
             ),
             Row([
                 self.publish_button,
-                Button(page, "SHARE_ROUNDED"),
-                Button(page, "PLAY_ARROW_ROUNDED"),
-                Button(page, "SETTINGS_ROUNDED"),   
-                Button(page, "PERSON_ROUNDED"),
+                Button(page, icon="SHARE_ROUNDED"),
+                Button(page, icon="PLAY_ARROW_ROUNDED"),
+                Button(page, icon="SETTINGS_ROUNDED"),   
+                Button(page, icon="PERSON_ROUNDED"),
                 ToggleThemeButton(page),
                 ],spacing=25,
             ),

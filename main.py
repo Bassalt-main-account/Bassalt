@@ -53,4 +53,4 @@ def main(page: Page):
 
     
 
-app(target=main, assets_dir="assets", view=AppView.WEB_BROWSER)
+app(target=main, assets_dir="assets", view=AppView.FLET_APP)

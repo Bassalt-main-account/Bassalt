@@ -53,7 +53,7 @@ class AddMenu(Container, ThemedWidget):
             [
                 Row([
                     Container(width=20),
-                    Button(self.page, sub_icons[i]),  # Ícono proveniente de la lista sub_icons
+                    Button(self.page, icon=sub_icons[i]),  # Ícono proveniente de la lista sub_icons
                     Text(self.page, item, color_key="text2",size=16),            # Texto del subitem
                     Container(width=20)
                 ])
