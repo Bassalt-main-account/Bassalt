@@ -9,10 +9,14 @@ class Layers(Container, ThemedWidget):
         ThemedWidget.__init__(self)
         self.page = page
 
+        def prueba(e):
+            print(slider.get_selected())
+            
         color = get_color(self.page.theme_mode, "background")
+        slider = SliderMenu(page, ["Pages", "Layers", "Styles"],on_update=prueba)
         
         content = Container(
-            content= SliderMenu(page, ["Pages", "Layers", "Styles"]),
+            content= slider,
             padding=padding.symmetric(30, 30),
         )
         
@@ -33,4 +37,5 @@ class Layers(Container, ThemedWidget):
         cuando cambia el tema de la página.
         """
         self.bgcolor = get_color(self.page.theme_mode, "background")
+        
         self.update()

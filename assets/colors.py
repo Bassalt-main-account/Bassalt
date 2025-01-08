@@ -2,7 +2,7 @@ COLORS = {
     "dark": {
         "primary": "#3b4187",
         "background": "#101011",
-        "background2": "#1E1E1E",
+        "background2": "#2B2A2A",
         "hover": "#ffffff",
         "selected": "#ffffff",
         "text": "#ffffff",
