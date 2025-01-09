@@ -34,8 +34,11 @@ class Text(FletText, ThemedWidget):
             self.color = self.text_style.get_selected(self.page.theme_mode)
         else:
             self.color = self.text_style.get_color(self.page.theme_mode)
-            
+
+        
         self.update()
+
+
     
     def toggle_selected(self):
         """

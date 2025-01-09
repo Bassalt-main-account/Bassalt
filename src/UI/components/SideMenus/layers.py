@@ -1,6 +1,7 @@
 from flet import Container, Row, Column, ScrollMode, padding, Stack
 from src.UI.components.theming.ThemedWidget import ThemedWidget
 from src.UI.components.button.Button import Button
+from src.UI.components.text.Text import Text
 from src.UI.components.menu.SliderMenu import SliderMenu
 from assets.colors import get_color
 
@@ -10,22 +11,39 @@ class Layers(Container, ThemedWidget):
         self.page = page
 
         def prueba(e):
-            print(slider.get_selected())
+            selected = slider.get_selected()
+
+            if selected == "Pages":
+                self.screen.content.controls[1] = pages_container
+            elif selected == "Layers":
+                self.screen.content.controls[1] = layers_container
+            elif selected == "Styles": 
+                self.screen.content.controls[1] = styles_container
             
-        color = get_color(self.page.theme_mode, "background")
+            self.screen.update()
+
+
         slider = SliderMenu(page, ["Pages", "Layers", "Styles"],on_update=prueba)
+
+        pages_container = Container(Text(page, "Pages", size=18))
+        layers_container = Container(Text(page, "Layers", size=18))
+        styles_container = Container(Text(page, "Styles", size=18))
         
-        content = Container(
-            content= slider,
+        self.screen = Container(
+            content= Column([
+                slider,
+                pages_container
+                
+            ],spacing=15),
             padding=padding.symmetric(30, 30),
         )
         
         super().__init__(
-            content=Stack([content, Button(self.page, "CLOSE_ROUNDED",size=20, right=0, top=0, on_click=close_menu)]),
-            bgcolor=color,
+            content=Stack([self.screen, Button(self.page, "CLOSE_ROUNDED",size=20, right=0, top=0, on_click=close_menu)]),
+            bgcolor=get_color(self.page.theme_mode, "background"),
             padding=padding.symmetric(20, 20),
             border_radius=15,
-            height=700,  # Limita la altura del contenedor principal
+            height=600,  # Limita la altura del contenedor principal
         )
         
         

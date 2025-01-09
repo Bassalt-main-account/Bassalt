@@ -32,7 +32,7 @@ class AddMenu(Container, ThemedWidget):
             bgcolor=color,
             padding=padding.symmetric(20, 20),
             border_radius=15,
-            height=700,  # Limita la altura del contenedor principal
+            height=600,  # Limita la altura del contenedor principal
         )
         
         
