@@ -4,13 +4,14 @@ from src.UI.components.button.Button import Button
 from src.UI.components.text.Text import Text
 from assets.colors import get_color
 from src.data.assets import assets, assets_icons
+from src.data.cache import get_theme_mode
 
 class AddMenu(Container, ThemedWidget):
     def __init__(self, page, close_menu):
         ThemedWidget.__init__(self)
         self.page = page
 
-        color = get_color(self.page.theme_mode, "background")
+        color = get_color(get_theme_mode(), "background")
 
         # Construimos la columna principal con la lista de paneles.
         self.rows = Column(
@@ -93,5 +94,6 @@ class AddMenu(Container, ThemedWidget):
         Actualiza el color de fondo (y potencialmente otros estilos) 
         cuando cambia el tema de la página.
         """
-        self.bgcolor = get_color(self.page.theme_mode, "background")
-        self.update()
+        self.bgcolor = get_color(get_theme_mode(), "background")
+        if self.page:
+            self.update()

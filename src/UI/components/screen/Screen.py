@@ -10,6 +10,7 @@ from flet import (
 from src.UI.components.theming.ThemedWidget import ThemedWidget
 from src.UI.components.text.Text import Text
 from assets.colors import get_color
+from src.data.cache import get_theme_mode
 
 class Screen(Container, ThemedWidget):
     def __init__(self, page, width=850, height=550):
@@ -28,7 +29,7 @@ class Screen(Container, ThemedWidget):
         self._initial_offset_y = 0.0
 
         # Color inicial según el tema
-        color = get_color(self.page.theme_mode, "background")
+        color = get_color(get_theme_mode(), "background")
 
         # Contenedor visual (fondo)
         self.background_container = Container(
@@ -106,9 +107,10 @@ class Screen(Container, ThemedWidget):
     def update_theme(self):
         """Actualiza el color del contenedor con el tema actual."""
         self.background_container.bgcolor = get_color(
-            self.page.theme_mode, "background"
+            get_theme_mode(), "background"
         )
-        self.background_container.update()
+        if self.page:
+            self.background_container.update()
 
     def get_widget(self):
         """Devuelve este contenedor para agregarlo a la página."""

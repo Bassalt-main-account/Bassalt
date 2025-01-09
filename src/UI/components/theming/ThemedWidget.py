@@ -8,7 +8,7 @@ class ThemedWidget:
     def __init__(self,):
         # Registramos el widget actual en la lista global
         super().__init__()  # Llamada a super para soporte de herencia múltiple
-        ThemedWidget._observers.append(self)
+        ThemedWidget._observers.append(self) 
 
     def update_theme(self):
         """Método abstracto para actualizar el tema. Debe implementarse en clases hijas."""

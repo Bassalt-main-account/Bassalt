@@ -1,7 +1,7 @@
 from flet import Text as FletText
 from src.UI.components.theming.ThemedWidget import ThemedWidget
 from .TextStyle import TextStyle
-from assets.colors import COLORS as c
+from src.data.cache import get_theme_mode
 
 class Text(FletText, ThemedWidget):
     def __init__(self, page, value, size=14, font="firasansMedium", color_key="text", selected_key="selected"):
@@ -12,11 +12,8 @@ class Text(FletText, ThemedWidget):
         self.page = page
         self.selected = False
 
-        if color_key not in c["light"] or color_key not in c["dark"]:
-            raise KeyError(f"La clave '{color_key}' no está definida en los colores.")
-
         self.text_style = TextStyle(color_key, selected_key)
-        color = self.text_style.get_color(self.page.theme_mode)
+        color = self.text_style.get_color(get_theme_mode())
 
         # Inicializa el texto de Flet
         super().__init__(                                                                               
@@ -30,13 +27,14 @@ class Text(FletText, ThemedWidget):
         """
         Actualiza el color del texto según el tema actual.
         """
+    
         if self.selected:
-            self.color = self.text_style.get_selected(self.page.theme_mode)
+            self.color = self.text_style.get_selected(get_theme_mode())
         else:
-            self.color = self.text_style.get_color(self.page.theme_mode)
+            self.color = self.text_style.get_color(get_theme_mode())
 
-        
-        self.update()
+        if self.page:
+            self.update()
 
 
     

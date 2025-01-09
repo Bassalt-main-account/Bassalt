@@ -3,6 +3,7 @@ from flet import Container, Row, Stack, alignment, animation
 from src.UI.components.theming.ThemedWidget import ThemedWidget
 from src.UI.components.text.Text import Text
 from assets.colors import get_color
+from src.data.cache import get_theme_mode
 
 class SliderMenu(Container, ThemedWidget):
     def __init__(
@@ -45,7 +46,7 @@ class SliderMenu(Container, ThemedWidget):
             # Make it the same size as a button (or slightly bigger if desired).
             width=self._max_width,
             height=self.size * 2,
-            bgcolor=get_color(self.page.theme_mode, self.selected_key),
+            bgcolor=get_color(get_theme_mode(), self.selected_key),
             border_radius=self.size,
             left=0,       # Will animate from one button to another
             top=0,
@@ -72,7 +73,7 @@ class SliderMenu(Container, ThemedWidget):
         self.content = self.stack
 
         # Container (itself) styling
-        self.bgcolor = get_color(self.page.theme_mode, bgcolor_key)
+        self.bgcolor = get_color(get_theme_mode(), bgcolor_key)
         self.border_radius = self.size * 1.2
         self.padding = self.size / 3
 
@@ -108,7 +109,7 @@ class SliderMenu(Container, ThemedWidget):
         new_left = index * (self._max_width + self.size/3)
         self.highlight_pill.left = new_left
         self.highlight_pill.width = self._max_width 
-        self.highlight_pill.bgcolor = get_color(self.page.theme_mode, self.selected_key)
+        self.highlight_pill.bgcolor = get_color(get_theme_mode(), self.selected_key)
         # Trigger an update so the position animates.
         try:
             self.highlight_pill.update()
@@ -124,16 +125,18 @@ class SliderMenu(Container, ThemedWidget):
 
     def update_theme(self):
         """Called if the theme changes; re-apply the correct colors."""
-        self.bgcolor = get_color(self.page.theme_mode, self.bgcolor_key)
+        self.bgcolor = get_color(get_theme_mode(), self.bgcolor_key)
         for button in self.buttons:
             button.content.color = (
-                get_color(self.page.theme_mode, self.bgcolor_key)
+                get_color(get_theme_mode(), self.bgcolor_key)
                 if button.content.value == self.selected
-                else get_color(self.page.theme_mode, self.text_key)
+                else get_color(get_theme_mode(), self.text_key)
             )
         # Also update the highlight pill color:
-        self.highlight_pill.bgcolor = get_color(self.page.theme_mode, self.selected_key)
-        self.update()
+        self.highlight_pill.bgcolor = get_color(get_theme_mode(), self.selected_key)
+        
+        if self.page:
+            self.update()
 
     
     

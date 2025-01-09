@@ -7,6 +7,7 @@ from src.UI.components.theming.toggleThemeButton import ToggleThemeButton
 from src.UI.components.SideMenus.add import AddMenu
 from src.UI.components.SideMenus.layers import Layers
 from assets.colors import get_color 
+from src.data.cache import get_theme_mode
 
 
 class TopMenu(Container, ThemedWidget):
@@ -28,7 +29,7 @@ class TopMenu(Container, ThemedWidget):
         #region Top Menu        
         self.publish_button = ElevatedButton(
             content=Text(page, value="Publish", color_key="text"),
-            bgcolor=get_color(page.theme_mode, "primary"),
+            bgcolor=get_color(get_theme_mode(), "primary"),
             style=ButtonStyle(padding=15)
         )
         
@@ -65,15 +66,17 @@ class TopMenu(Container, ThemedWidget):
         expand_loose=True,
         )
         
-        self.bgcolor = get_color(page.theme_mode, "background")
+        self.bgcolor = get_color(get_theme_mode(), "background")
         self.padding = 20
         
 
     def update_theme(self):
-        self.bgcolor = get_color(self.page.theme_mode, "background")
-        self.publish_button.bgcolor=get_color(self.page.theme_mode, "primary")
+        self.bgcolor = get_color(get_theme_mode(), "background")
+        self.publish_button.bgcolor=get_color(get_theme_mode(), "primary")
         self.publish_button.update()
-        self.update()
+        
+        if self.page:
+            self.update()
 
 
     def add_button_on_click(self, e):        
@@ -88,7 +91,7 @@ class TopMenu(Container, ThemedWidget):
             
     def empty_menus(self, e):  
         self.current_menu = None
-        e.control.bgcolor = e.control.button_style.get_bgcolor(self.page.theme_mode) # Restaurar el color del boton
+        e.control.bgcolor = e.control.button_style.get_bgcolor(get_theme_mode()) # Restaurar el color del boton
         e.control.update()
         self.unselect_buttons()
         self.select_menu()
