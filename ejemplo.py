@@ -1,159 +1,221 @@
 import flet
 from flet import (
     Page,
+    Container,
     Column,
     Row,
-    Container,
     Text,
-    Draggable,
-    DragTarget,
-    DragTargetAcceptEvent,
     GestureDetector,
     DragStartEvent,
     DragUpdateEvent,
+    DragEndEvent,
     Stack,
     alignment,
-    # En lugar de colors, usamos Colors para evitar deprecation
     Colors
 )
 
-# --------------------------------------------------------------------
-# 1) DRAGGABLE DE MENÚ
-#    Sin on_drop, sin on_drag_update: solo group="add_menu" y data=...
-# --------------------------------------------------------------------
-def build_menu_item(item_name: str) -> Draggable:
+# Importa la lista global "layers" donde almacenarás la info de los widgets creados
+from src.data.layers import layers
+
+
+class ManualDragSystem:
     """
-    Retorna un Draggable clásico (sin callbacks inexistentes),
-    con un texto y color de fondo. Esto se arrastra desde el menú.
+    Implementa un drag & drop manual:
+      - Menú a la izquierda con ítems (arrastrables con GestureDetector).
+      - "Pantalla" a la derecha, dentro de un Stack (screen_stack) para colocar
+        los widgets finales (con posicionamiento absoluto).
+      - Un Stack global (top_stack) que cubre toda la ventana, para mostrar el
+        "fantasma" en posición absoluta incluso sobre el menú.
+      
+      Al soltar, añade un nuevo widget a screen_stack y guarda su info en 'layers'.
     """
-    drag_container = Container(
-        content=Text(item_name, color=Colors.BLACK),
-        bgcolor=Colors.BLUE_100,
-        padding=10,
-        border_radius=5,
-        width=120
-    )
-    return Draggable(
-        group="add_menu",  # El DragTarget lo aceptará
-        data=item_name,    # Lo que "transportamos"
-        content=drag_container
-    )
 
-# --------------------------------------------------------------------
-# 2) MENÚ LATERAL
-# --------------------------------------------------------------------
-def build_add_menu() -> Container:
-    assets = {
-        "Basics": ["Text", "Image", "Frame"],
-        "Widgets": ["Button", "Table", "Clock"],
-    }
+    def __init__(self, page: Page, menu_items: list[str]):
+        self.page = page
+        self.menu_items = menu_items
+        
+        # Donde guardaremos info de los widgets creados
+        self.layers = layers
+        
+        # Estado para arrastre manual
+        self.dragging = False
+        self.drag_data = None
+        self.ghost_container = None
+        self.pointer_x = 0.0
+        self.pointer_y = 0.0
+        self.offset_x = 0.0
+        self.offset_y = 0.0
+        
+        self.screen_left = 200  # ancho del menú
+        self.screen_stack = Stack(expand=True)  # Widgets definitivos (pantalla)
+        self.top_stack = Stack(expand=True)     # Capa global (menú + pantalla + fantasma)
+        
+        self._layout = None
+        self._build_layout()
+    
+    def _build_layout(self):
+        """
+        Crea el layout principal:
+         - Menú en un contenedor de 200 px
+         - "Pantalla" a la derecha con un Stack (screen_stack)
+         - Ambos se ponen en un Row, que es hijo del top_stack
+        """
+        # 1) Menú a la izquierda
+        menu_col = Column()
+        menu_col.controls.append(Text("Manual Menu", color=Colors.BLACK, weight="bold"))
+        
+        for item_name in self.menu_items:
+            # Cada ítem: Container + GestureDetector
+            menu_item = Container(
+                width=120,
+                padding=5,
+                bgcolor=Colors.AMBER_50,
+                content=Text(item_name, color=Colors.BLACK),
+            )
+            item_gd = GestureDetector(
+                content=menu_item,
+                drag_interval=1,
+                on_pan_start=lambda e, n=item_name: self.on_pan_start(e, n),
+                on_pan_update=self.on_pan_update,
+                on_pan_end=self.on_pan_end
+            )
+            menu_col.controls.append(item_gd)
 
-    # Por compatibilidad, evitamos colors.* y UserControl
-    menu_column = Column([
-        Text("Add Menu", color=Colors.BLACK, size=16, weight="bold"),
-    ])
-
-    for title, items in assets.items():
-        menu_column.controls.append(
-            Text(title, color=Colors.BLACK, size=14, weight="bold")
+        menu_container = Container(
+            width=self.screen_left,  # 200 px
+            height=600,
+            bgcolor=Colors.AMBER_50,
+            content=menu_col
         )
-        subitems_col = Column([
-            build_menu_item(it) for it in items
-        ])
-        menu_column.controls.append(subitems_col)
+        
+        # 2) La "pantalla" a la derecha: un Container con screen_stack dentro
+        screen_container = Container(
+            width=self.page.window.width - self.screen_left,
+            height=600,
+            bgcolor=Colors.GREY_200,
+            content=self.screen_stack  # <-- Stack para posicionar widgets absolutos
+        )
+        
+        # 3) Un Row con [menú, pantalla]
+        row = Row([menu_container, screen_container], expand=True)
 
-    return Container(
-        width=200,
-        bgcolor=Colors.AMBER_50,
-        content=menu_column,
-        padding=10
-    )
+        # 4) top_stack: donde iremos poniendo "row" (nivel base) y, encima, el "fantasma"
+        self.top_stack.controls.append(row)
+        self._layout = self.top_stack
 
-# --------------------------------------------------------------------
-# 3) ITEM MOVIBLE EN PANTALLA (sin UserControl)
-#    Se implementa como una función que retorna un Container
-#    con GestureDetector y left, top en un Stack.
-# --------------------------------------------------------------------
-def build_movable_item(text: str, left: float, top: float) -> Container:
-    """
-    Retorna un Container posicionado (left, top) en un Stack,
-    arrastrable con GestureDetector (on_pan_update).
-    """
-    # Guardamos variables en un dict, pues no usamos UserControl:
-    state = {
-        "left": left,
-        "top": top
-    }
+    def build(self):
+        """Retorna el control principal a añadir en la page."""
+        return self._layout
 
-    # Contenido visual
-    content = Container(
-        width=120,
-        height=40,
-        bgcolor=Colors.LIGHT_BLUE_100,
-        alignment=alignment.center,
-        content=Text(text, color=Colors.BLACK),
-    )
+    # ----------------------------------------------------------------
+    #  HANDLERS DE GESTURE DETECTOR (drag manual)
+    # ----------------------------------------------------------------
+    def on_pan_start(self, e: DragStartEvent, item_name: str):
+        self.dragging = True
+        self.drag_data = item_name
+        
+        self.pointer_x = e.global_x
+        self.pointer_y = e.global_y
+        self.offset_x = e.local_x
+        self.offset_y = e.local_y
+        
+        # Creamos un "fantasma" para feedback visual
+        # (Personalízalo como quieras; debe ser hijo de un Stack)
+        ghost = Container(
+            width=120,
+            height=40,
+            bgcolor=Colors.BLUE_100,
+            border_radius=5,
+            alignment=alignment.center,
+            left=self.pointer_x - self.offset_x,
+            top=self.pointer_y - self.offset_y,
+            content=Text(f"Ghost {item_name}", color=Colors.BLACK),
+        )
 
-    # Al arrastrar (on_pan_*), actualizamos la posición en el Stack
-    def pan_update(e: DragUpdateEvent):
-        # Sumamos el delta al "left"/"top" del contenedor
-        c.left += e.delta_x
-        c.top += e.delta_y
-        c.update()
+        self.ghost_container = ghost
+        self.top_stack.controls.append(ghost)  # Lo ponemos en el stack global
+        self.top_stack.update()
 
-    gesture = GestureDetector(
-        on_pan_start=lambda e: None,  # No haremos nada en pan_start
-        on_pan_update=pan_update,
-        content=content,
-    )
+    def on_pan_update(self, e: DragUpdateEvent):
+        if self.dragging and self.ghost_container:
+            # Actualizamos la posición global del puntero
+            self.pointer_x += e.delta_x
+            self.pointer_y += e.delta_y
+            # Movemos el fantasma
+            self.ghost_container.left = self.pointer_x - self.offset_x
+            self.ghost_container.top = self.pointer_y - self.offset_y
+            self.ghost_container.update()
 
-    # El contenedor en el Stack (posición absoluta)
-    c = Container(
-        left=state["left"],
-        top=state["top"],
-        content=gesture
-    )
-    return c
+    def on_pan_end(self, e: DragEndEvent):
+        if self.dragging and self.ghost_container:
+            # Posición donde se soltó
+            final_x = self.pointer_x - self.offset_x
+            final_y = self.pointer_y - self.offset_y
+            
+            # Vemos si soltó dentro de la pantalla (x >= 200)
+            if final_x >= self.screen_left:
+                # Lo añadimos en la screen_stack con coordenadas relativas
+                rel_x = final_x - self.screen_left
+                rel_y = final_y
+                # Crea el widget final con su propio arrastre interno
+                item = self.create_final_widget(self.drag_data, rel_x, rel_y)
+                self.screen_stack.controls.append(item)
+                self.screen_stack.update()
 
-# --------------------------------------------------------------------
-# 4) PANTALLA (DragTarget: on_accept -> crea un item en (10,10))
-# --------------------------------------------------------------------
-def build_screen() -> Container:
-    stack = Stack(expand=True)
+                # Guardar info en layers
+                self.layers.append({
+                    "name": self.drag_data,
+                    "x": rel_x,
+                    "y": rel_y
+                })
+                
+                print(self.layers)
+            
+            # Quitamos el fantasma
+            self.top_stack.controls.remove(self.ghost_container)
+            self.top_stack.update()
+        
+        # Reiniciamos estados
+        self.dragging = False
+        self.drag_data = None
+        self.ghost_container = None
+    
+    # ----------------------------------------------------------------
+    #  WIDGET FINAL (movible dentro de la pantalla)
+    # ----------------------------------------------------------------
+    def create_final_widget(self, label: str, left: float, top: float) -> Container:
+        """
+        Crea el control definitivo que se mostrará en la pantalla.
+        También lo envolvemos en un GestureDetector para moverlo.
+        """
+        def item_pan_update(e: DragUpdateEvent):
+            c.left += e.delta_x
+            c.top += e.delta_y
+            c.update()
 
-    def on_accept_drop(e: DragTargetAcceptEvent):
-        # No tenemos e.x, e.y ni callbacks en Draggable, así que...
-        # Creamos el nuevo ítem siempre en la misma posición:
-        item_name = e.control.data  # "Text", "Image", etc.
-        movable = build_movable_item(f"New {item_name}", left=10, top=10)
-        stack.controls.append(movable)
-        stack.update()
+        content = Container(
+            width=120,
+            height=40,
+            bgcolor=Colors.LIGHT_BLUE_100,
+            alignment=alignment.center,
+            content=Text(f"New {label}", color=Colors.BLACK),
+        )
+        gd = GestureDetector(
+            content=content,
+            on_pan_update=item_pan_update
+        )
+        c = Container(left=left, top=top, content=gd)
+        return c
 
-    drop_target = DragTarget(
-        group="add_menu",
-        content=stack,
-        on_accept=on_accept_drop
-    )
 
-    return Container(
-        width=600,
-        height=400,
-        bgcolor=Colors.GREY_200,
-        content=drop_target
-    )
-
-# --------------------------------------------------------------------
-# 5) MAIN
-# --------------------------------------------------------------------
 def main(page: Page):
-    page.title = "Flet - Legacy Drag & Drop"
-    page.window.width = 900  # Evitamos window_width
-    page.window.height = 600 # Evitamos window_height
+    page.title = "Manual Drag & Drop System"
+    page.window.width = 900
+    page.window.height = 600
 
-    add_menu = build_add_menu()
-    screen = build_screen()
-
-    layout = Row([add_menu, screen], expand=True)
-    page.add(layout)
+    menu_items = ["Text", "Image", "Frame", "Button", "Table", "Clock"]
+    
+    drag_system = ManualDragSystem(page, menu_items)
+    page.add(drag_system.build())
 
 flet.app(target=main)
