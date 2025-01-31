@@ -1,15 +1,16 @@
-
 services:
   db:
     image: bitnami/postgresql:15
-    container_name: bassalt-db
+    container_name: ${CONTAINER_NAME}
     restart: always
+    env_file:
+      - .env  # Asegura que docker-compose cargue las variables
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}  
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data
+      - ./${VOLUME_NAME}:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql

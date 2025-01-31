@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# Cargar variables de entorno desde el archivo .env de forma segura
+if [ -f .env ]; then
+    set -o allexport
+    source .env
+    set +o allexport
+else
+    echo "Error: No se encontró el archivo .env. Asegúrate de que existe en el mismo directorio que este script."
+    exit 1
+fi
+
 # Verifica si se pasó un argumento
 if [ -z "$1" ]; then
     echo "Error: Debes proporcionar un argumento. Usa --help para ver las opciones."
@@ -30,9 +40,9 @@ case "$1" in
         ;;
     db)
         echo "Conectando a PostgreSQL..."
-        docker exec -it postgres_container psql -U user -d mydatabase
-        echo 
-        echo "NOTA: [ Si da error Postgres y el contenedor esta iniciado dadle unos segundos ]"
+        echo "Ejecutando: docker exec -it \"$CONTAINER_NAME\" psql -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\""
+        docker exec -it "$CONTAINER_NAME" psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" 
+        echo "NOTA: [ Si da error Postgres y el contenedor está iniciado, dale unos segundos ]"
         ;;
     off)
         echo "Apagando los contenedores..."
@@ -42,7 +52,7 @@ case "$1" in
     restart)
         echo "Eliminando contenedores y datos..."
         docker-compose down -v
-        rm -rf postgres_data
+        rm -rf "$VOLUME_NAME"
         echo "Reinicio completado. Vuelve a ejecutar 'on' para iniciar PostgreSQL."
         ;;
     *)
