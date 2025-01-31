@@ -1,5 +1,15 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
+
+:: Cargar variables desde el archivo .env
+if exist .env (
+    for /f "tokens=1,2 delims==" %%a in (.env) do (
+        set %%a=%%b
+    )
+) else (
+    echo Error: No se encontró el archivo .env. Asegúrate de que existe en el mismo directorio que este script.
+    exit /b 1
+)
 
 :: Verifica si se pasó un argumento
 if "%1"=="" (
@@ -32,9 +42,10 @@ if "%1"=="on" (
 
 if "%1"=="db" (
     echo Conectando a PostgreSQL...
-    docker exec -it postgres_container psql -U user -d mydatabase
-    echo 
-    echo NOTA: [ Si da error Postgres y el contenedor esta iniciado dadle unos segundos ]
+    echo Ejecutando: docker exec -it %CONTAINER_NAME% psql -U %POSTGRES_USER% -d %POSTGRES_DB%
+    docker exec -it %CONTAINER_NAME% psql -U %POSTGRES_USER% -d %POSTGRES_DB%
+    echo.
+    echo NOTA: [ Si da error Postgres y el contenedor esta iniciado, dale unos segundos ]
     exit /b 0
 )
 
@@ -48,7 +59,7 @@ if "%1"=="off" (
 if "%1"=="restart" (
     echo Eliminando contenedores y datos...
     docker-compose down -v
-    rmdir /s /q postgres_data
+    rmdir /s /q %VOLUME_NAME%
     echo Reinicio completado. Vuelve a ejecutar 'on' para iniciar PostgreSQL.
     exit /b 0
 )
