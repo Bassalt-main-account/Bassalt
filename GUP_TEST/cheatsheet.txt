@@ -1,0 +1,14 @@
+
+Build
+docker-compose up --build -d
+
+Exec database 
+docker exec -it postgres_container psql -U user -d mydatabase
+
+
+Restart 
+docker-compose down 
+
+Renew
+docker-compose down -v
+rmdir /s /q postgres_data
