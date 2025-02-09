@@ -12,20 +12,22 @@ CREATE TABLE users (
 CREATE TABLE folders (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    parent_id INT REFERENCES folders(id) ON DELETE CASCADE
+    parent_id INT REFERENCES folders(id) ON DELETE CASCADE,
+    CONSTRAINT unique_folder_name_per_level UNIQUE (name, parent_id) -- Garantiza que no haya carpetas duplicadas en el mismo nivel
 );
 
 -- 3️⃣ Tabla de Archivos (cada archivo pertenece a una carpeta)
 CREATE TABLE files (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    folder_id INT REFERENCES folders(id) ON DELETE CASCADE
+    folder_id INT REFERENCES folders(id) ON DELETE CASCADE,
+    CONSTRAINT unique_file_name_per_folder UNIQUE (name, folder_id) -- Garantiza que no haya archivos duplicados en la misma carpeta
 );
 
 -- 4️⃣ Tabla de Permisos (definiendo permisos básicos)
 CREATE TABLE permissions (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL -- 'read', 'write', 'delete'
+    name VARCHAR(50) UNIQUE NOT NULL -- 'read', 'write', 'delete', 'admin'
 );
 
 -- 5️⃣ Tabla de ACL para Carpetas (herencia de permisos)
@@ -55,7 +57,7 @@ INSERT INTO users (username) VALUES
     ('bob'),
     ('charlie');
 
--- 🔹 Insertar permisos (lectura, escritura y eliminación)
+-- 🔹 Insertar permisos (lectura, escritura, eliminación y admin)
 INSERT INTO permissions (name) VALUES 
     ('read'),
     ('write'),

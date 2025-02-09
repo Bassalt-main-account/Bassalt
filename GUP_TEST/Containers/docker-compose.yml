@@ -14,6 +14,7 @@ services:
     volumes:
       - ./${VOLUME_NAME}:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./inserts.sql:/docker-entrypoint-initdb.d/02_inserts.sql
   api:
       build: .
       container_name: fastapi_app
