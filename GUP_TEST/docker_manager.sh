@@ -10,25 +10,27 @@ else
     exit 1
 fi
 
-# Verifica si se pasó un argumento
-if [ -z "$1" ]; then
-    echo "Error: Debes proporcionar un argumento. Usa --help para ver las opciones."
-    exit 1
-fi
-
-# Mostrar ayuda si el argumento es --help
-if [ "$1" == "--help" ]; then
+help() { 
     echo "==============================="
     echo " Docker PostgreSQL Manager"
     echo "==============================="
     echo "Uso: ./docker_manager.sh [opcion]"
     echo "Opciones:"
-    echo "  on      - Levanta y construye los contenedores"
-    echo "  db      - Conectarse a la base de datos PostgreSQL"
-    echo "  off     - Apagar los contenedores sin borrar datos"
-    echo "  restart - Regenerar container y estructura"
+    echo "  on          - Levanta y construye los contenedores"
+    echo "  off         - Apagar los contenedores sin borrar datos"
+    echo "  update      - Apaga y enciende contenedores (para actualizar api)"
+    echo "  updateAPI   - Apaga y enciende solo la API"
+    echo "  db          - Conectarse a la base de datos PostgreSQL"
+    echo "  activos     - Checkea que contenedores estan activos"
+    echo "  PURGE       - Regenerar container y estructura"
     echo "==============================="
     exit 0
+    # meter algo para docker-compose restart api
+}
+
+# Mostrar ayuda si el argumento es --help
+if [ -z "$1" ] || [ "$1" == "--help" ] ; then
+    help
 fi
 
 # Ejecutar acciones según el argumento proporcionado
@@ -49,14 +51,29 @@ case "$1" in
         docker-compose down
         echo "Contenedores detenidos."
         ;;
-    restart)
+    update)
+        echo "Apagando los contenedores..."
+        docker-compose down
+        echo "Contenedores detenidos."
+        echo "Iniciando Docker Compose con build..."
+        docker-compose up --build -d
+        echo "Contenedor iniciado."
+        ;;
+    updateAPI)
+        echo "Reiniciando API"
+        docker-compose restart api
+        echo "Hecho."
+        ;;
+    activos)
+        docker ps 
+        ;;
+    PURGE)
         echo "Eliminando contenedores y datos..."
         docker-compose down -v
         rm -rf "$VOLUME_NAME"
         echo "Reinicio completado. Vuelve a ejecutar 'on' para iniciar PostgreSQL."
         ;;
     *)
-        echo "Error: Opción no reconocida. Usa --help para ver las opciones."
-        exit 1
+        help
         ;;
 esac
