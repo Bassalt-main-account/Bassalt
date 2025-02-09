@@ -22,13 +22,16 @@ help() {
     echo "  on          - Levanta y construye los contenedores"
     echo "  off         - Apagar los contenedores sin borrar datos"
     echo "  update      - Apaga y enciende contenedores (para actualizar api)"
-    echo "  updateAPI   - Apaga y enciende solo la API"
+    #echo "  updateAPI   - Apaga y enciende solo la API"
+    echo "  test        - Checkea si la API esta up"
     echo "  db          - Conectarse a la base de datos PostgreSQL"
     echo "  activos     - Checkea qué contenedores están activos"
     echo "  PURGE       - Regenerar container y estructura"
     echo "==============================="
     exit 0
 }
+#TODO: Opcion para reiniciar aislada base de datos e inserts
+
 
 # Mostrar ayuda si el argumento es --help
 display_help() {
@@ -72,6 +75,10 @@ case "$1" in
         ;;
     activos)
         docker ps 
+        ;;
+    test)
+        curl 'http://127.0.0.1:8000/'
+        echo ''
         ;;
     PURGE)
         echo "Eliminando contenedores y datos..."
