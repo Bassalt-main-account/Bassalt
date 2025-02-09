@@ -14,3 +14,15 @@ services:
     volumes:
       - ./${VOLUME_NAME}:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  api:
+      build: .
+      container_name: fastapi_app
+      restart: always
+      depends_on:
+        - db
+      ports:
+        - "8000:8000"
+      environment:
+        DATABASE_URL: "postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@contenedor:5432/${POSTGRES_DB}"
+      env_file:
+        - .env
