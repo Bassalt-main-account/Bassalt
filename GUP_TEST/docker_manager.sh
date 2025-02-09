@@ -1,12 +1,15 @@
 #!/bin/bash
 
-# Cargar variables de entorno desde el archivo .env de forma segura
-if [ -f .env ]; then
+# Definir la carpeta donde están los archivos
+CONTAINER_DIR="Containers"
+
+# Cargar variables de entorno desde el archivo .env dentro de Containers
+if [ -f "$CONTAINER_DIR/.env" ]; then
     set -o allexport
-    source .env
+    source "$CONTAINER_DIR/.env"
     set +o allexport
 else
-    echo "Error: No se encontró el archivo .env. Asegúrate de que existe en el mismo directorio que este script."
+    echo "Error: No se encontró el archivo .env en $CONTAINER_DIR. Asegúrate de que existe."
     exit 1
 fi
 
@@ -21,23 +24,26 @@ help() {
     echo "  update      - Apaga y enciende contenedores (para actualizar api)"
     echo "  updateAPI   - Apaga y enciende solo la API"
     echo "  db          - Conectarse a la base de datos PostgreSQL"
-    echo "  activos     - Checkea que contenedores estan activos"
+    echo "  activos     - Checkea qué contenedores están activos"
     echo "  PURGE       - Regenerar container y estructura"
     echo "==============================="
     exit 0
-    # meter algo para docker-compose restart api
 }
 
 # Mostrar ayuda si el argumento es --help
-if [ -z "$1" ] || [ "$1" == "--help" ] ; then
-    help
-fi
+display_help() {
+    if [ -z "$1" ] || [ "$1" == "--help" ]; then
+        help
+    fi
+}
+
+display_help "$1"
 
 # Ejecutar acciones según el argumento proporcionado
 case "$1" in
     on)
         echo "Iniciando Docker Compose con build..."
-        docker-compose up --build -d
+        docker-compose -f "$CONTAINER_DIR/docker-compose.yml" up --build -d
         echo "Contenedor iniciado."
         ;;
     db)
@@ -48,20 +54,20 @@ case "$1" in
         ;;
     off)
         echo "Apagando los contenedores..."
-        docker-compose down
+        docker-compose -f "$CONTAINER_DIR/docker-compose.yml" down
         echo "Contenedores detenidos."
         ;;
     update)
         echo "Apagando los contenedores..."
-        docker-compose down
+        docker-compose -f "$CONTAINER_DIR/docker-compose.yml" down
         echo "Contenedores detenidos."
         echo "Iniciando Docker Compose con build..."
-        docker-compose up --build -d
+        docker-compose -f "$CONTAINER_DIR/docker-compose.yml" up --build -d
         echo "Contenedor iniciado."
         ;;
     updateAPI)
         echo "Reiniciando API"
-        docker-compose restart api
+        docker-compose -f "$CONTAINER_DIR/docker-compose.yml" restart api
         echo "Hecho."
         ;;
     activos)
@@ -69,8 +75,8 @@ case "$1" in
         ;;
     PURGE)
         echo "Eliminando contenedores y datos..."
-        docker-compose down -v
-        rm -rf "$VOLUME_NAME"
+        docker-compose -f "$CONTAINER_DIR/docker-compose.yml" down -v
+        rm -rf "$CONTAINER_DIR/$VOLUME_NAME"
         echo "Reinicio completado. Vuelve a ejecutar 'on' para iniciar PostgreSQL."
         ;;
     *)
