@@ -29,11 +29,12 @@ if "%1"=="--help" (
     echo Opciones:
     echo   on          - Levanta y construye los contenedores
     echo   off         - Apagar los contenedores sin borrar datos
-    echo   update      - Apaga y enciende contenedores (para actualizar api)
-    echo   updateAPI   - Apaga y enciende solo la API
+    echo   update      - Apaga y enciende contenedores (para actualizar API)
+    echo   test        - Comprueba si la API está activa
     echo   db          - Conectarse a la base de datos PostgreSQL
-    echo   activos     - Checkea que contenedores estan activos
-    echo   PURGE       - Regenerar container y estructura
+    echo   activos     - Lista los contenedores activos
+    echo   PURGE       - Regenera contenedores y estructura
+    echo   renew       - PURGE + on
     echo ===============================
     exit /b 0
 )
@@ -83,11 +84,33 @@ if "%1"=="activos" (
     exit /b 0
 )
 
+if "%1"=="test" (
+    echo Probando la API en http://127.0.0.1:8000/
+    curl http://127.0.0.1:8000/
+    echo.
+    echo Probando la API en http://127.0.0.1:8001/
+    curl http://127.0.0.1:8001/
+    echo.
+    exit /b 0
+)
+
 if "%1"=="PURGE" (
     echo Eliminando contenedores y datos...
     docker-compose -f %CONTAINER_DIR%/docker-compose.yml down -v
-    rmdir /s /q %CONTAINER_DIR%/%VOLUME_NAME%
+    rmdir /s /q %CONTAINER_DIR%\%VOLUME_NAME%
+    rmdir /s /q %CONTAINER_DIR%\%VOLUME_DATA%
     echo Reinicio completado. Vuelve a ejecutar 'on' para iniciar PostgreSQL.
+    exit /b 0
+)
+
+if "%1"=="renew" (
+    echo Eliminando contenedores y datos...
+    docker-compose -f %CONTAINER_DIR%/docker-compose.yml down -v
+    rmdir /s /q %CONTAINER_DIR%\%VOLUME_NAME%
+    rmdir /s /q %CONTAINER_DIR%\%VOLUME_DATA%
+    echo Iniciando Docker Compose con build...
+    docker-compose -f %CONTAINER_DIR%/docker-compose.yml up --build -d
+    echo Contenedor iniciado.
     exit /b 0
 )
 

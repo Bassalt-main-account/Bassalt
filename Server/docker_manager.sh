@@ -30,7 +30,6 @@ help() {
     echo "==============================="
     exit 0
 }
-#TODO: Opcion para reiniciar aislada base de datos e inserts
 
 
 # Mostrar ayuda si el argumento es --help
