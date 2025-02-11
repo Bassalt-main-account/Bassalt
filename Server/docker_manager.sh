@@ -81,6 +81,10 @@ case "$1" in
         echo ''
         curl 'http://127.0.0.1:8000/users'
         echo ''
+        curl 'http://127.0.0.1:8000/folders'
+        echo ''
+        curl 'http://127.0.0.1:8000/files'
+        echo ''
         ;;
     PURGE)
         echo "Eliminando contenedores y datos..."
