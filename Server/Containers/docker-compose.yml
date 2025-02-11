@@ -28,3 +28,17 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+    volumes:
+        - ./storage:/app/storage  # 🔹 Volumen compartido con file_manager
+  file_manager:
+    build: ./file_manager
+    container_name: file_manager_container
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - api
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./storage:/app/storage  # 🔹 Comparte volumen con API
