@@ -1,5 +1,6 @@
 # Datos de PostgreSQL (persistencia)
-main_data/
+contVolume
+data
 
 # Variables de entorno (credenciales)
 .env
