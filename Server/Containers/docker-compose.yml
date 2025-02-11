@@ -27,4 +27,4 @@ services:
       - "8000:8000"
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}
-      JWT_SECRET_KEY: "supersecreto"
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
