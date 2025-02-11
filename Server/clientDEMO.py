@@ -1,5 +1,5 @@
 from getpass import getpass
-from sysAccessLib import APIClient
+from sysAccess.sysAccessLib import APIClient
 
 def main():
     client = APIClient()
