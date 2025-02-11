@@ -57,7 +57,7 @@ INSERT INTO users (username) VALUES
     ('bob'),
     ('charlie');
 
--- 🔹 Insertar permisos (lectura, escritura, eliminación y admin)
+-- 🔹 Insertar permisos (lectura, escritura y eliminación)
 INSERT INTO permissions (name) VALUES 
     ('read'),
     ('write'),
@@ -66,26 +66,27 @@ INSERT INTO permissions (name) VALUES
 
 -- 🔹 Insertar carpetas con jerarquía
 INSERT INTO folders (name, parent_id) VALUES 
-    ('Departamento A', NULL), -- Carpeta raíz
-    ('Proyecto X', 1),  -- Subcarpeta de Departamento A
-    ('Documentos', 2),  -- Subcarpeta de Proyecto X
-    ('Proyecto Y', 1);  -- Subcarpeta de Departamento A
+    ('Departamento A', NULL),
+    ('Proyecto X', 1),
+    ('Documentos', 2),
+    ('Proyecto Y', 1);
 
 -- 🔹 Insertar archivos en carpetas
 INSERT INTO files (name, folder_id) VALUES 
-    ('archivo1.txt', 3), -- En "Documentos"
-    ('archivo2.txt', 3), -- En "Documentos"
-    ('archivo3.txt', 4); -- En "Proyecto Y"
+    ('archivo1.txt', 3),
+    ('archivo2.txt', 3),
+    ('archivo3.txt', 4);
 
 -- 🔹 Asignar permisos a usuarios en carpetas
 INSERT INTO folder_acl (folder_id, user_id, permission_id, inherit) VALUES 
-    (1, 1, 1, FALSE),  -- Alice tiene read en "Departamento A"
-    (2, 1, 1, TRUE),   -- Alice hereda permisos en "Proyecto X"
-    (3, 2, 2, FALSE),  -- Bob tiene write en "Documentos"
-    (4, 3, 1, FALSE);  -- Charlie tiene read en "Proyecto Y"
+    (1, 1, 1, FALSE),
+    (2, 1, 1, TRUE),
+    (3, 2, 2, FALSE),
+    (4, 3, 1, FALSE);
 
 -- 🔹 Asignar permisos específicos a archivos
 INSERT INTO file_acl (file_id, user_id, permission_id) VALUES 
-    (1, 2, 1),  -- Bob puede leer "archivo1.txt"
-    (2, 2, 2),  -- Bob puede escribir en "archivo2.txt"
-    (3, 3, 1);  -- Charlie puede leer "archivo3.txt"
+    (1, 2, 1),
+    (2, 2, 2),
+    (3, 3, 1);
+
