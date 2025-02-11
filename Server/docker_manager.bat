@@ -16,8 +16,21 @@ if exist %CONTAINER_DIR%\.env (
 
 :: Verifica si se paso un argumento
 if "%1"=="" (
-    echo Error: Debes proporcionar un argumento. Usa --help para ver las opciones.
-    exit /b 1
+    echo ===============================
+    echo  Docker PostgreSQL Manager
+    echo ===============================
+    echo Uso: docker_manager.bat [opcion]
+    echo Opciones:
+    echo   on          - Levanta y construye los contenedores
+    echo   off         - Apagar los contenedores sin borrar datos
+    echo   update      - Apaga y enciende contenedores (para actualizar API)
+    echo   test        - Comprueba si la API está activa
+    echo   db          - Conectarse a la base de datos PostgreSQL
+    echo   activos     - Lista los contenedores activos
+    echo   PURGE       - Regenera contenedores y estructura
+    echo   renew       - PURGE + on
+    echo ===============================
+    exit /b 0
 )
 
 :: Mostrar ayuda si el argumento es --help
