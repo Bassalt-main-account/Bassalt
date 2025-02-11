@@ -2,10 +2,11 @@
 -- CREACIÓN DE TABLAS
 -- =========================
 
--- 1️⃣ Tabla de Usuarios
+-- 1️⃣ Tabla de Usuarios (con contraseñas hasheadas)
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(255) UNIQUE NOT NULL
+    username VARCHAR(255) UNIQUE NOT NULL,
+    hashed_password TEXT NOT NULL
 );
 
 -- 2️⃣ Tabla de Carpetas (con soporte para jerarquía)
