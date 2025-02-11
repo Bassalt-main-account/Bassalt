@@ -29,7 +29,7 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
     volumes:
-        - ./storage:/app/storage  # 🔹 Volumen compartido con file_manager
+        - ./${VOLUME_DATA}:/app/${VOLUME_DATA}  # 🔹 Volumen compartido con file_manager
   file_manager:
     build: ./file_manager
     container_name: file_manager_container
@@ -41,4 +41,4 @@ services:
     ports:
       - "8001:8001"
     volumes:
-      - ./storage:/app/storage  # 🔹 Comparte volumen con API
+      - ./${VOLUME_DATA}:/app/${VOLUME_DATA}  # 🔹 Comparte volumen con API
