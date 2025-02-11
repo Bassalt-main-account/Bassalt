@@ -1,0 +1,5 @@
+# Datos de PostgreSQL (persistencia)
+main_data/
+
+# Variables de entorno (credenciales)
+.env
