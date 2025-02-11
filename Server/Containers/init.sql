@@ -53,10 +53,10 @@ CREATE TABLE file_acl (
 -- =========================
 
 -- 🔹 Insertar usuarios
-INSERT INTO users (username) VALUES 
-    ('alice'),
-    ('bob'),
-    ('charlie');
+INSERT INTO users (username, hashed_password) VALUES 
+    ('root', '$2a$12$KtuGa2uRanipD.mlCAIRqORc7QQhX6WK6WYvSLlUDFBDx/DGGpMYO');
+
+$2b$12$Qng84weDZh1RtW1x0R3hfu7CSTijw9KXj5ZuEKOxDZeEHRi.pRR.m
 
 -- 🔹 Insertar permisos (lectura, escritura y eliminación)
 INSERT INTO permissions (name) VALUES 
