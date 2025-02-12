@@ -37,18 +37,25 @@ def read_root():
 
 @app.post("/register/", response_model=schemas.UserResponse)
 def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    """ Permite a los usuarios registrarse con username y password """
+    """ Permite a los usuarios registrarse con username, password, mail, birthday y default_role """
     db_user = db.query(models.User).filter(models.User.username == user.username).first()
     if db_user:
         raise HTTPException(status_code=400, detail="El usuario ya existe")
     
     hashed_password = auth.hash_password(user.password)
-    new_user = models.User(username=user.username, hashed_password=hashed_password)
+    new_user = models.User(
+        username=user.username, 
+        hashed_password=hashed_password, 
+        mail=user.mail, 
+        birthday=user.birthday,
+        default_role=user.default_role
+    )
     
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     return new_user
+
 
 @app.post("/login/", response_model=schemas.TokenData)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
@@ -88,9 +95,10 @@ def get_files(db: Session = Depends(get_db)):
 
 @app.get("/user/{user_id}", dependencies=[Depends(auth.oauth2_scheme)])
 def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
-    """ Devuelve todos los datos de un usuario dado su ID, o error si no existe. """
-    user = db.query(User).filter(User.id == user_id).first()
+    """ Devuelve todos los datos de un usuario, incluyendo mail, birthday y default_role """
+    user = db.query(models.User).filter(models.User.id == user_id).first()
     return user.__dict__ if user else {"error": "Usuario no encontrado"}
+
 
 @app.get("/folder/{folder_id}", dependencies=[Depends(auth.oauth2_scheme)])
 def get_folder_by_id(folder_id: int, db: Session = Depends(get_db)):
@@ -103,6 +111,15 @@ def get_file_by_id(file_id: int, db: Session = Depends(get_db)):
     """ Devuelve todos los datos de un archivo dado su ID, o error si no existe. """
     file = db.query(File).filter(File.id == file_id).first()
     return file.__dict__ if file else {"error": "Archivo no encontrado"}
+
+@app.get("/permission/{permission_id}", dependencies=[Depends(auth.oauth2_scheme)])
+def get_permission_name(permission_id: int, db: Session = Depends(get_db)):
+    """ Devuelve el nombre de un permiso dado su ID """
+    permission = db.query(models.Permission).filter(models.Permission.id == permission_id).first()
+    if not permission:
+        return {"error": "Permiso no encontrado"}
+
+    return {"permission_id": permission.id, "name": permission.name}
 
 
 #################################### 

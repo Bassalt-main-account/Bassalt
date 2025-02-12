@@ -3,6 +3,11 @@ from sysAccess.sysAccessLib import APIClient
 
 def main():
     client = APIClient()
+    available = client.service_available()
+    
+    if not available:
+        print("[X] - Servicios no estan funcionando o apagados")
+        return
 
     # Autenticación antes de entrar al menú
     username = input("Username: ")
@@ -29,7 +34,9 @@ def main():
             if users:
                 print("\n👥 Usuarios registrados:")
                 for user in users:
-                    print(f"- ID: {user['id']}, Nombre: {user['username']}")
+                    permiso_id = user.get("default_role")
+                    permission_name = client.get_permission_name(permiso_id)
+                    print(f"- ID: {user['id']}, Nombre: {user['username']}, Permisos: {permission_name}")
             else:
                 print("❌ No se pudieron obtener los usuarios.")
 
@@ -54,7 +61,7 @@ def main():
         elif opcion == "4":
             message = client.say_hello_fm()
             if message:
-                print(f"\n🖥 File Manager dice: {message}")
+                print(f"\n🖥 File Manager dice: {message.get("message")}")
             else:
                 print("❌ Error al conectar con File Manager")
 

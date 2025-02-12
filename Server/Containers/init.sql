@@ -2,12 +2,23 @@
 -- CREACIÓN DE TABLAS
 -- =========================
 
+-- 4️⃣ Tabla de Permisos (definiendo permisos básicos)
+CREATE TABLE permissions (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL -- 'read', 'write', 'delete', 'admin'
+);
+
+
 -- 1️⃣ Tabla de Usuarios (con contraseñas hasheadas)
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(255) UNIQUE NOT NULL,
-    hashed_password TEXT NOT NULL
+    username TEXT UNIQUE NOT NULL,
+    hashed_password TEXT NOT NULL,
+    mail TEXT NOT NULL,
+    birthday TEXT NULL,
+    default_role INTEGER NULL REFERENCES permissions(id) ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
 );
+
 
 -- 2️⃣ Tabla de Carpetas (con soporte para jerarquía)
 CREATE TABLE folders (
@@ -25,11 +36,6 @@ CREATE TABLE files (
     CONSTRAINT unique_file_name_per_folder UNIQUE (name, folder_id) -- Garantiza que no haya archivos duplicados en la misma carpeta
 );
 
--- 4️⃣ Tabla de Permisos (definiendo permisos básicos)
-CREATE TABLE permissions (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL -- 'read', 'write', 'delete', 'admin'
-);
 
 -- 5️⃣ Tabla de ACL para Carpetas (herencia de permisos)
 CREATE TABLE folder_acl (
@@ -52,18 +58,19 @@ CREATE TABLE file_acl (
 -- INSERCIÓN DE DATOS DE PRUEBA
 -- =========================
 
--- 🔹 Insertar usuarios
-INSERT INTO users (username, hashed_password) VALUES 
-    ('root', '$2a$12$KtuGa2uRanipD.mlCAIRqORc7QQhX6WK6WYvSLlUDFBDx/DGGpMYO');
-
-$2b$12$Qng84weDZh1RtW1x0R3hfu7CSTijw9KXj5ZuEKOxDZeEHRi.pRR.m
-
 -- 🔹 Insertar permisos (lectura, escritura y eliminación)
 INSERT INTO permissions (name) VALUES 
     ('read'),
     ('write'),
     ('delete'),
     ('admin');
+
+-- 🔹 Insertar usuarios
+INSERT INTO users (username, hashed_password, mail, birthday, default_role) VALUES
+    ('root', '$2a$12$KtuGa2uRanipD.mlCAIRqORc7QQhX6WK6WYvSLlUDFBDx/DGGpMYO', 'root@mail.com', '1970-01-01', 4),
+    ('reader_user', '$2a$12$QiRkXYbTX1gi4W/b80V8ZuOgIvEpjSJoT1kGk4w1OE1i2zeQPa.7K', 'reader@mail.com', '1995-03-21', 1),
+    ('writer_user', '$2a$12$QiRkXYbTX1gi4W/b80V8ZuOgIvEpjSJoT1kGk4w1OE1i2zeQPa.7K', 'writer@mail.com', '1992-07-10', 2);
+
 
 -- 🔹 Insertar carpetas con jerarquía
 INSERT INTO folders (name, parent_id) VALUES 

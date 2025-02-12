@@ -5,10 +5,16 @@ from typing import Optional
 class UserCreate(BaseModel):
     username: str
     password: str
+    mail: str  # Cambiado de corroe a mail
+    birthday: Optional[str] = None  # Nuevo campo de cumpleaños
+    default_role: Optional[int] = None  # Nuevo campo de rol
 
 class UserResponse(BaseModel):
     id: int
     username: str
+    mail: str  # Cambiado de corroe a mail
+    birthday: Optional[str] = None  # Nuevo campo de cumpleaños
+    default_role: Optional[int] = None  # Nuevo campo de rol
 
 class TokenData(BaseModel):
     access_token: str

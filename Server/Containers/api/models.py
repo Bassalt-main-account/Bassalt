@@ -8,6 +8,10 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, nullable=False)
     hashed_password = Column(String, nullable=False)  
+    mail = Column(String, nullable=False)  # Nuevo campo de correo renombrado
+    birthday = Column(String, nullable=True) 
+    default_role = Column(Integer, ForeignKey("permissions.id", ondelete="SET NULL"), nullable=True)  # Nuevo campo de rol
+
 
 class Folder(Base):
     __tablename__ = "folders"
