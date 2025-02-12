@@ -89,6 +89,18 @@ def get_files(db: Session = Depends(get_db)):
     files = db.query(File).all()
     return [{"id": file.id, "name": file.name, "folder_id": file.folder_id} for file in files]
 
+@app.get("/is_admin/{user_id}", dependencies=[Depends(auth.oauth2_scheme)])
+def is_admin(user_id: int, db: Session = Depends(get_db)):
+    """ Verifica si un usuario es administrador (default_role = 4) """
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        return {"error": "Usuario no encontrado"}
+
+    is_admin = user.default_role == 4  # Comprueba si el rol del usuario es 4 (admin)
+
+    return {"user_id": user.id, "username": user.username, "is_admin": is_admin}
+
+
 #################################### 
 #   GET BY ID
 ####################################
@@ -330,6 +342,10 @@ def create_permission(permission: schemas.PermissionCreate, db: Session = Depend
     db.refresh(db_permission)
     return db_permission
 
+#################################### 
+#   ASSIGN 
+####################################
+
 @app.post("/assign_folder_permission/", dependencies=[Depends(auth.oauth2_scheme)])
 def assign_folder_permission(folder_acl: schemas.FolderACLCreate, db: Session = Depends(get_db)):
     """ Asigna un permiso a un usuario en una carpeta """
@@ -356,3 +372,56 @@ def assign_file_permission(file_acl: schemas.FileACLCreate, db: Session = Depend
     db.commit()
     db.refresh(db_acl)
     return db_acl
+
+#################################### 
+#   MODIFY 
+####################################
+@app.put("/update_user/{user_id}", dependencies=[Depends(auth.oauth2_scheme)])
+def update_user(user_id: int, user_update: schemas.UserCreate, db: Session = Depends(get_db)):
+    """ Modifica los datos de un usuario por su ID """
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        return {"error": "Usuario no encontrado"}
+
+    # Actualiza solo los campos proporcionados en la solicitud
+    user.mail = user_update.mail if user_update.mail else user.mail
+    user.birthday = user_update.birthday if user_update.birthday else user.birthday
+    user.default_role = user_update.default_role if user_update.default_role else user.default_role
+
+    db.commit()
+    db.refresh(user)
+    
+    return {"message": "Usuario actualizado", "user": user.__dict__}
+
+@app.put("/update_folder/{folder_id}", dependencies=[Depends(auth.oauth2_scheme)])
+def update_folder(folder_id: int, folder_update: schemas.FolderCreate, db: Session = Depends(get_db)):
+    """ Modifica los datos de una carpeta por su ID """
+    folder = db.query(models.Folder).filter(models.Folder.id == folder_id).first()
+    if not folder:
+        return {"error": "Carpeta no encontrada"}
+
+    # Actualiza solo los campos proporcionados
+    folder.name = folder_update.name if folder_update.name else folder.name
+    folder.parent_id = folder_update.parent_id if folder_update.parent_id else folder.parent_id
+
+    db.commit()
+    db.refresh(folder)
+    
+    return {"message": "Carpeta actualizada", "folder": {"id": folder.id, "name": folder.name, "parent_id": folder.parent_id}}
+
+@app.put("/update_file/{file_id}", dependencies=[Depends(auth.oauth2_scheme)])
+def update_file(file_id: int, file_update: schemas.FileCreate, db: Session = Depends(get_db)):
+    """ Modifica los datos de un archivo por su ID """
+    file = db.query(models.File).filter(models.File.id == file_id).first()
+    if not file:
+        return {"error": "Archivo no encontrado"}
+
+    # Actualiza solo los campos proporcionados
+    file.name = file_update.name if file_update.name else file.name
+    file.folder_id = file_update.folder_id if file_update.folder_id else file.folder_id
+
+    db.commit()
+    db.refresh(file)
+    
+    return {"message": "Archivo actualizado", "file": {"id": file.id, "name": file.name, "folder_id": file.folder_id}}
+
