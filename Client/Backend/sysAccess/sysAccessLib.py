@@ -34,20 +34,19 @@ class APIClient:
         
     def get_users(self):
         """ Obtiene la lista de usuarios """
-        return self.DB_fetch_data("users", "Usuarios")
+        return self.DB_fetch_data("users")
 
     def get_folders(self):
         """ Obtiene la lista de carpetas """
-        return self.DB_fetch_data("folders", "Carpetas")
+        return self.DB_fetch_data("folders")
 
     def get_files(self):
         """ Obtiene la lista de archivos """
-        return self.DB_fetch_data("files", "Archivos")
+        return self.DB_fetch_data("files")
 
     def get_permission_name(self, permission_id):
         """ Obtiene el nombre de un permiso a partir de su ID """
         if not self.token:
-            print("⚠ No autenticado: Token es None")
             return "Desconocido"
         
         url = f"{self.api_base_url}/permission/{permission_id}"
@@ -64,7 +63,7 @@ class APIClient:
         url = f"{self.file_manager_url}/"
         return requests.get(url).json()
     
-    def DB_fetch_data(self, endpoint, entity_name):
+    def DB_fetch_data(self, endpoint):
         """ Método privado para obtener datos de la API """
         if not self.token:
             return False
