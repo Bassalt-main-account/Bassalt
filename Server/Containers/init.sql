@@ -2,11 +2,23 @@
 -- CREACIÓN DE TABLAS
 -- =========================
 
--- 1️⃣ Tabla de Usuarios
+-- 4️⃣ Tabla de Permisos (definiendo permisos básicos)
+CREATE TABLE permissions (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL -- 'read', 'write', 'delete', 'admin'
+);
+
+
+-- 1️⃣ Tabla de Usuarios (con contraseñas hasheadas)
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(255) UNIQUE NOT NULL
+    username TEXT UNIQUE NOT NULL,
+    hashed_password TEXT NOT NULL,
+    mail TEXT NOT NULL,
+    birthday TEXT NULL,
+    default_role INTEGER NULL REFERENCES permissions(id) ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
 );
+
 
 -- 2️⃣ Tabla de Carpetas (con soporte para jerarquía)
 CREATE TABLE folders (
@@ -24,11 +36,6 @@ CREATE TABLE files (
     CONSTRAINT unique_file_name_per_folder UNIQUE (name, folder_id) -- Garantiza que no haya archivos duplicados en la misma carpeta
 );
 
--- 4️⃣ Tabla de Permisos (definiendo permisos básicos)
-CREATE TABLE permissions (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL -- 'read', 'write', 'delete', 'admin'
-);
 
 -- 5️⃣ Tabla de ACL para Carpetas (herencia de permisos)
 CREATE TABLE folder_acl (
@@ -51,41 +58,43 @@ CREATE TABLE file_acl (
 -- INSERCIÓN DE DATOS DE PRUEBA
 -- =========================
 
--- 🔹 Insertar usuarios
-INSERT INTO users (username) VALUES 
-    ('alice'),
-    ('bob'),
-    ('charlie');
-
--- 🔹 Insertar permisos (lectura, escritura, eliminación y admin)
+-- 🔹 Insertar permisos (lectura, escritura y eliminación)
 INSERT INTO permissions (name) VALUES 
     ('read'),
     ('write'),
     ('delete'),
     ('admin');
 
+-- 🔹 Insertar usuarios
+INSERT INTO users (username, hashed_password, mail, birthday, default_role) VALUES
+    ('root', '$2a$12$KtuGa2uRanipD.mlCAIRqORc7QQhX6WK6WYvSLlUDFBDx/DGGpMYO', 'root@mail.com', '1970-01-01', 4),
+    ('reader_user', '$2a$12$QiRkXYbTX1gi4W/b80V8ZuOgIvEpjSJoT1kGk4w1OE1i2zeQPa.7K', 'reader@mail.com', '1995-03-21', 1),
+    ('writer_user', '$2a$12$QiRkXYbTX1gi4W/b80V8ZuOgIvEpjSJoT1kGk4w1OE1i2zeQPa.7K', 'writer@mail.com', '1992-07-10', 2);
+
+
 -- 🔹 Insertar carpetas con jerarquía
 INSERT INTO folders (name, parent_id) VALUES 
-    ('Departamento A', NULL), -- Carpeta raíz
-    ('Proyecto X', 1),  -- Subcarpeta de Departamento A
-    ('Documentos', 2),  -- Subcarpeta de Proyecto X
-    ('Proyecto Y', 1);  -- Subcarpeta de Departamento A
+    ('Departamento A', NULL),
+    ('Proyecto X', 1),
+    ('Documentos', 2),
+    ('Proyecto Y', 1);
 
 -- 🔹 Insertar archivos en carpetas
 INSERT INTO files (name, folder_id) VALUES 
-    ('archivo1.txt', 3), -- En "Documentos"
-    ('archivo2.txt', 3), -- En "Documentos"
-    ('archivo3.txt', 4); -- En "Proyecto Y"
+    ('archivo1.txt', 3),
+    ('archivo2.txt', 3),
+    ('archivo3.txt', 4);
 
 -- 🔹 Asignar permisos a usuarios en carpetas
 INSERT INTO folder_acl (folder_id, user_id, permission_id, inherit) VALUES 
-    (1, 1, 1, FALSE),  -- Alice tiene read en "Departamento A"
-    (2, 1, 1, TRUE),   -- Alice hereda permisos en "Proyecto X"
-    (3, 2, 2, FALSE),  -- Bob tiene write en "Documentos"
-    (4, 3, 1, FALSE);  -- Charlie tiene read en "Proyecto Y"
+    (1, 1, 1, FALSE),
+    (2, 1, 1, TRUE),
+    (3, 2, 2, FALSE),
+    (4, 3, 1, FALSE);
 
 -- 🔹 Asignar permisos específicos a archivos
 INSERT INTO file_acl (file_id, user_id, permission_id) VALUES 
-    (1, 2, 1),  -- Bob puede leer "archivo1.txt"
-    (2, 2, 2),  -- Bob puede escribir en "archivo2.txt"
-    (3, 3, 1);  -- Charlie puede leer "archivo3.txt"
+    (1, 2, 1),
+    (2, 2, 2),
+    (3, 3, 1);
+

@@ -22,15 +22,14 @@ help() {
     echo "  on          - Levanta y construye los contenedores"
     echo "  off         - Apagar los contenedores sin borrar datos"
     echo "  update      - Apaga y enciende contenedores (para actualizar api)"
-    #echo "  updateAPI   - Apaga y enciende solo la API"
     echo "  test        - Checkea si la API esta up"
     echo "  db          - Conectarse a la base de datos PostgreSQL"
     echo "  activos     - Checkea qué contenedores están activos"
     echo "  PURGE       - Regenerar container y estructura"
+    echo "  renew       - PURGE + on "
     echo "==============================="
     exit 0
 }
-#TODO: Opcion para reiniciar aislada base de datos e inserts
 
 
 # Mostrar ayuda si el argumento es --help
@@ -79,12 +78,24 @@ case "$1" in
     test)
         curl 'http://127.0.0.1:8000/'
         echo ''
+        curl 'http://127.0.0.1:8001/'
+        echo ''
         ;;
     PURGE)
         echo "Eliminando contenedores y datos..."
         docker-compose -f "$CONTAINER_DIR/docker-compose.yml" down -v
         rm -rf "$CONTAINER_DIR/$VOLUME_NAME"
+        rm -rf "$CONTAINER_DIR/$VOLUME_DATA"
         echo "Reinicio completado. Vuelve a ejecutar 'on' para iniciar PostgreSQL."
+        ;;
+    renew)
+        echo "Eliminando contenedores y datos..."
+        docker-compose -f "$CONTAINER_DIR/docker-compose.yml" down -v
+        rm -rf "$CONTAINER_DIR/$VOLUME_NAME"
+        rm -rf "$CONTAINER_DIR/$VOLUME_DATA"
+        echo "Iniciando Docker Compose con build..."
+        docker-compose -f "$CONTAINER_DIR/docker-compose.yml" up --build -d
+        echo "Contenedor iniciado."
         ;;
     *)
         help

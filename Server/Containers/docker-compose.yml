@@ -4,26 +4,41 @@ services:
     container_name: ${CONTAINER_NAME}
     restart: always
     env_file:
-      - .env  # Asegura que docker-compose cargue las variables
+      - .env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}  
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
       - ./${VOLUME_NAME}:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./inserts.sql:/docker-entrypoint-initdb.d/02_inserts.sql
+
   api:
-      build: .
-      container_name: fastapi_app
-      restart: always
-      depends_on:
-        - db
-      ports:
-        - "8000:8000"
-      environment:
-        DATABASE_URL: "postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@contenedor:5432/${POSTGRES_DB}"
-      env_file:
-        - .env
+    build: ./api
+    container_name: api_container
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+    volumes:
+        - ./${VOLUME_DATA}:/app/${VOLUME_DATA}  # 🔹 Volumen compartido con file_manager
+  file_manager:
+    build: ./file_manager
+    container_name: file_manager_container
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - api
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./${VOLUME_DATA}:/app/${VOLUME_DATA}  # 🔹 Comparte volumen con API
