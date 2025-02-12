@@ -10,9 +10,18 @@ class PathRequest(BaseModel):
 BASE_DIR = Path("/app/data")  # Carpeta base dentro del contenedor
 BASE_DIR.mkdir(parents=True, exist_ok=True)  # Crear si no existe
 
+#################################### 
+#   BASIC 
+####################################
+
 @app.get("/")
 def read_root():
     return {"message": "File manager up"}
+
+
+#################################### 
+#   MODIFY  
+####################################
 
 @app.post("/mkdir")
 def create_folder(request: PathRequest):
@@ -52,9 +61,29 @@ def delete_path(request: PathRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+#################################### 
+#   Checkers  
+####################################
+
 @app.get("/exists")
 def check_exists(request: PathRequest):
     return {"exists": (BASE_DIR / request.path).exists()}
+
+@app.get("/is_file")
+def is_file(request: PathRequest):
+    path = BASE_DIR / request.path
+    return {"is_file": path.is_file()}
+
+@app.get("/is_folder")
+def is_folder(request: PathRequest):
+    path = BASE_DIR / request.path
+    return {"is_folder": path.is_dir()}
+
+
+#################################### 
+#   Content 
+####################################
 
 @app.get("/ls")
 def list_directory(request: PathRequest):
