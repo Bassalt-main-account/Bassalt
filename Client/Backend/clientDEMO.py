@@ -2,7 +2,15 @@ from getpass import getpass
 from sysAccess.sysAccessLib import APIClient
 
 def main():
-    client = APIClient()
+
+    # VARS
+    IP = "127.0.0.1"
+    PORT_BD = 8000
+    PORT_FM = 8001
+
+    # Instance
+    client = APIClient(IP, PORT_BD, PORT_FM)
+    
     available = client.service_available()
     
     if not available:

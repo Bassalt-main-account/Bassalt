@@ -1,18 +1,16 @@
 import requests
 import json 
 
-# Configuración de URLs
-API_BASE_URL = "http://127.0.0.1:8000"  # API principal
-FILE_MANAGER_URL = "http://127.0.0.1:8001"  # File Manager
-
 class APIClient:
-    def __init__(self):
+    def __init__(self, ip_address, api_port, file_manager_port):
+        self.api_base_url = f"http://{ip_address}:{api_port}"
+        self.file_manager_url = f"http://{ip_address}:{file_manager_port}"
         self.token = None
 
     def service_available(self):
         try:
-            api_response = requests.get(f"{API_BASE_URL}/")
-            fm_response = requests.get(f"{FILE_MANAGER_URL}/")
+            api_response = requests.get(f"{self.api_base_url}/")
+            fm_response = requests.get(f"{self.file_manager_url}/")
             
             if api_response.status_code == 200 and fm_response.status_code == 200:
                 return True
@@ -20,11 +18,9 @@ class APIClient:
             pass
         return False
 
-
-
     def login(self, username, password):
         """ Inicia sesión y guarda el token JWT """
-        url = f"{API_BASE_URL}/login/"
+        url = f"{self.api_base_url}/login/"
         data = {"username": username, "password": password}
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         
@@ -35,11 +31,10 @@ class APIClient:
             return True
         else:
             return False
-
+        
     def get_users(self):
         """ Obtiene la lista de usuarios """
-        response = self._fetch_data("users", "Usuarios")
-        return response if response else []
+        return self._fetch_data("users", "Usuarios")
 
     def get_folders(self):
         """ Obtiene la lista de carpetas """
@@ -55,7 +50,7 @@ class APIClient:
             print("⚠ No autenticado: Token es None")
             return "Desconocido"
         
-        url = f"{API_BASE_URL}/permission/{permission_id}"
+        url = f"{self.api_base_url}/permission/{permission_id}"
         headers = {"Authorization": f"Bearer {self.token}"}
         
         response = requests.get(url, headers=headers)
@@ -66,20 +61,15 @@ class APIClient:
         
     def say_hello_fm(self):
         """ Envía una solicitud al File Manager y obtiene su respuesta """
-        url = f"{FILE_MANAGER_URL}/"
-        return requests.get("http://127.0.0.1:8001/").json()
+        url = f"{self.file_manager_url}/"
+        return requests.get(url).json()
     
-        
-
-
-
     def _fetch_data(self, endpoint, entity_name):
         """ Método privado para obtener datos de la API """
         if not self.token:
-            print("⚠ No autenticado: Token es None")
             return False
 
-        url = f"{API_BASE_URL}/{endpoint}/"
+        url = f"{self.api_base_url}/{endpoint}/"
         headers = {"Authorization": f"Bearer {self.token}"}
 
         response = requests.get(url, headers=headers)
@@ -88,3 +78,7 @@ class APIClient:
             return response.json()
         else:
             return False
+    
+    
+
+
